@@ -1,21 +1,27 @@
 <?php
-include 'koneksi.php'; // atau sesuaikan path
+// =========================
+//  ROUTE SENTRAL (index.php)
+// =========================
 
-$query = mysqli_query($koneksi, "SELECT * FROM admin");
+// Definisikan path root agar semua include konsisten
+define('BASE_PATH', __DIR__);
+
+// Koneksi global (cukup sekali)
+require_once BASE_PATH . '/koneksi.php';
+
+// Optional: contoh uji koneksi
+// $query = mysqli_query($koneksi, "SELECT * FROM admin");
 // while ($data = mysqli_fetch_assoc($query)) {
 //     echo $data['namaadmin'] . "<br>";
 // }
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <?php include 'pages/header.php'; ?>
+  <?php include BASE_PATH . '/pages/header.php'; ?>
 </head>
-
 
 <body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed sidebar-collapse">
 
@@ -28,89 +34,110 @@ $query = mysqli_query($koneksi, "SELECT * FROM admin");
 
     <!-- Navbar -->
     <nav class="main-header navbar navbar-expand navbar-dark">
-      <?php include 'pages/navbar.php'; ?>
+      <?php include BASE_PATH . '/pages/navbar.php'; ?>
     </nav>
     <!-- /.navbar -->
 
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
-      <?php include 'pages/sidebar.php'; ?>
+      <?php include BASE_PATH . '/pages/sidebar.php'; ?>
     </aside>
 
-
-    <!-- Content Wrapper. Contains page content -->
+    <!-- Content Wrapper -->
     <div class="content-wrapper">
-      <!-- Content Header (Page header) -->
+
+      <!-- Content Header -->
       <div class="content-header">
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
               <h1 class="m-0">Dashboard v2</h1>
-            </div><!-- /.col -->
+            </div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="index.php?halaman=dashboard">Home</a></li>
                 <li class="breadcrumb-item active">Dashboard v2</li>
               </ol>
-            </div><!-- /.col -->
-          </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
+            </div>
+          </div>
+        </div>
       </div>
       <!-- /.content-header -->
 
-      <!-- Main content -->
+      <!-- Main Content -->
       <section class="content">
         <?php
-
+        // ROUTER — semua navigasi dikontrol di sini
         if (isset($_GET['halaman'])) {
           switch ($_GET['halaman']) {
 
-            // bagian admin
-            case "admin";
-              include("views/admin/admin.php");
+              // ===== ADMIN =====
+            case "admin":
+              include BASE_PATH . "/views/admin/admin.php";
               break;
-            case "tambahadmin";
-              include("views/admin/tambahadmin.php");
+            case "tambahadmin":
+              include BASE_PATH . "/views/admin/tambahadmin.php";
               break;
-            case "editadmin";
-              include("views/admin/editadmin.php");
-              break;
-
-            // bagian peminjam
-            case "peminjam";
-              include("views/peminjam/peminjam.php");
-              break;
-            case "tambahpeminjam";
-              include("views/peminjam/tambahpeminjam.php");
-              break;
-            case "editpeminjam";
-              include("views/peminjam/editpeminjam.php");
+            case "editadmin":
+              include BASE_PATH . "/views/admin/editadmin.php";
               break;
 
-              // bagian alat
-            case "alat";
-              include("views/alat/alat.php");
+              // ===== ASAL =====
+            case "asal":
+              include BASE_PATH . "/views/asal/asal.php";
               break;
-            case "tambahalat";
-              include("views/alat/tambahalat.php");
+            case "tambahasal":
+              include BASE_PATH . "/views/asal/tambahasal.php";
               break;
-            case "editalat";
-              include("views/alat/editalat.php");
+            case "editasal":
+              include BASE_PATH . "/views/asal/editasal.php";
               break;
 
+              // ===== ASAL =====
+            case "asal2":
+              include BASE_PATH . "/views/asal2/asal2.php";
+              break;
+            case "tambahasal2":
+              include BASE_PATH . "/views/asal2/tambahasal2.php";
+              break;
+            case "editasal2":
+              include BASE_PATH . "/views/asal2/editasal2.php";
+              break;
 
-            case "dashboard";
-              include("views/dashboard.php");
+              // ===== PEMINJAM =====
+            case "peminjam":
+              include BASE_PATH . "/views/peminjam/peminjam.php";
               break;
-            case "home";
-              include("views/dashboard.php");
+            case "tambahpeminjam":
+              include BASE_PATH . "/views/peminjam/tambahpeminjam.php";
               break;
-            case "default";
-              include("views/notfound.php");
+            case "editpeminjam":
+              include BASE_PATH . "/views/peminjam/editpeminjam.php";
+              break;
+
+              // ===== ALAT =====
+            case "alat":
+              include BASE_PATH . "/views/alat/alat.php";
+              break;
+            case "tambahalat":
+              include BASE_PATH . "/views/alat/tambahalat.php";
+              break;
+            case "editalat":
+              include BASE_PATH . "/views/alat/editalat.php";
+              break;
+
+              // ===== DASHBOARD / DEFAULT =====
+            case "dashboard":
+            case "home":
+              include BASE_PATH . "/views/dashboard.php";
+              break;
+
+            default:
+              include BASE_PATH . "/pages/notfound.php";
+              break;
           }
-
         } else {
-          include("pages/notfound.php");
+          include BASE_PATH . "/views/dashboard.php"; // default tampilan awal
         }
         ?>
       </section>
@@ -119,40 +146,30 @@ $query = mysqli_query($koneksi, "SELECT * FROM admin");
     <!-- /.content-wrapper -->
 
     <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
-      <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- /.control-sidebar -->
+    <aside class="control-sidebar control-sidebar-dark"></aside>
 
     <!-- Main Footer -->
     <footer class="main-footer">
-      <?php include 'pages/footer.php'; ?>
+      <?php include BASE_PATH . '/pages/footer.php'; ?>
     </footer>
   </div>
   <!-- ./wrapper -->
 
   <!-- REQUIRED SCRIPTS -->
-  <!-- jQuery -->
   <script src="plugins/jquery/jquery.min.js"></script>
-  <!-- Bootstrap -->
   <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <!-- overlayScrollbars -->
   <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-  <!-- AdminLTE App -->
   <script src="dist/js/adminlte.js"></script>
 
   <!-- PAGE PLUGINS -->
-  <!-- jQuery Mapael -->
   <script src="plugins/jquery-mousewheel/jquery.mousewheel.js"></script>
   <script src="plugins/raphael/raphael.min.js"></script>
   <script src="plugins/jquery-mapael/jquery.mapael.min.js"></script>
   <script src="plugins/jquery-mapael/maps/usa_states.min.js"></script>
-  <!-- ChartJS -->
   <script src="plugins/chart.js/Chart.min.js"></script>
 
   <!-- AdminLTE for demo purposes -->
   <script src="dist/js/demo.js"></script>
-  <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
   <script src="dist/js/pages/dashboard2.js"></script>
 </body>
 

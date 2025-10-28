@@ -5,13 +5,13 @@ session_start();
 
 if ($proses == 'tambah') {
 
-    $namapeminjam  = $_POST['namapeminjam'];
-    $username      = $_POST['username'];
-    $password      = md5($_POST['password']);
-    $idasal        = $_POST['idasal'];
+    $namaadmin  = $_POST['namaadmin'];
+    $username   = $_POST['username'];
+    $password   = md5($_POST['password']);
+    $idjabatan  = $_POST['idjabatan'];
 
-    $foto          = $_FILES['foto']['name'];
-    $tmp_foto      = $_FILES['foto']['tmp_name'];
+    $foto       = $_FILES['foto']['name'];
+    $tmp_foto   = $_FILES['foto']['tmp_name'];
 
     if (!empty($foto)) {
         $namafilebaru = date('YmdHis') . '_' . $foto;
@@ -20,9 +20,9 @@ if ($proses == 'tambah') {
         $namafilebaru = '';
     }
 
-    mysqli_query($koneksi, "INSERT INTO peminjam SET 
-        idasal='$idasal',
-        namapeminjam='$namapeminjam',
+    mysqli_query($koneksi, "INSERT INTO admin SET 
+        idjabatan='$idjabatan',
+        namaadmin='$namaadmin',
         username='$username',
         password='$password',
         foto='$namafilebaru'
@@ -30,17 +30,17 @@ if ($proses == 'tambah') {
 
 } elseif ($proses == 'edit') {
 
-    $idpeminjam    = $_POST['idpeminjam'];
-    $namapeminjam  = $_POST['namapeminjam'];
-    $username      = $_POST['username'];
-    $password      = $_POST['password']; // opsional
-    $idasal        = $_POST['idasal'];
+    $idadmin   = $_POST['idadmin'];
+    $namaadmin = $_POST['namaadmin'];
+    $username  = $_POST['username'];
+    $password  = $_POST['password']; // opsional
+    $idjabatan = $_POST['idjabatan'];
 
-    $foto          = $_FILES['foto']['name'];
-    $tmp_foto      = $_FILES['foto']['tmp_name'];
+    $foto       = $_FILES['foto']['name'];
+    $tmp_foto   = $_FILES['foto']['tmp_name'];
 
     // Ambil data lama
-    $queryShow  = "SELECT * FROM peminjam WHERE idpeminjam='$idpeminjam'";
+    $queryShow  = "SELECT * FROM admin WHERE idadmin='$idadmin'";
     $sqlShow    = mysqli_query($koneksi, $queryShow);
     $result     = mysqli_fetch_assoc($sqlShow);
 
@@ -57,30 +57,30 @@ if ($proses == 'tambah') {
 
     if (!empty($password)) {
         $password = md5($password);
-        mysqli_query($koneksi, "UPDATE peminjam SET 
-            idasal='$idasal',
-            namapeminjam='$namapeminjam',
+        mysqli_query($koneksi, "UPDATE admin SET 
+            idjabatan='$idjabatan',
+            namaadmin='$namaadmin',
             username='$username',
             password='$password',
             foto='$namafilebaru'
-            WHERE idpeminjam='$idpeminjam'
+            WHERE idadmin='$idadmin'
         ");
     } else {
-        mysqli_query($koneksi, "UPDATE peminjam SET 
-            idasal='$idasal',
-            namapeminjam='$namapeminjam',
+        mysqli_query($koneksi, "UPDATE admin SET 
+            idjabatan='$idjabatan',
+            namaadmin='$namaadmin',
             username='$username',
             foto='$namafilebaru'
-            WHERE idpeminjam='$idpeminjam'
+            WHERE idadmin='$idadmin'
         ");
     }
 
 } elseif ($proses == 'hapus') {
 
-    $idpeminjam = $_GET['idpeminjam'];
+    $idadmin = $_GET['idadmin'];
 
     // hapus foto lama jika ada
-    $queryShow  = "SELECT foto FROM peminjam WHERE idpeminjam='$idpeminjam'";
+    $queryShow  = "SELECT foto FROM admin WHERE idadmin='$idadmin'";
     $sqlShow    = mysqli_query($koneksi, $queryShow);
     $result     = mysqli_fetch_assoc($sqlShow);
 
@@ -88,10 +88,9 @@ if ($proses == 'tambah') {
         unlink("../foto/" . $result['foto']);
     }
 
-    mysqli_query($koneksi, "DELETE FROM peminjam WHERE idpeminjam='$idpeminjam'");
-
+    mysqli_query($koneksi, "DELETE FROM admin WHERE idadmin='$idadmin'");
 }
 
-// redirect ke halaman peminjam
-header("location:../index.php?halaman=peminjam");
+// redirect ke halaman admin
+header("location:../index.php?halaman=admin");
 ?>

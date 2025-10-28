@@ -82,6 +82,18 @@
                 </a>
               </li>
               <li class="nav-item">
+                <a href="index.php?halaman=asal" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>index asal</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="index.php?halaman=tambahasal" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Tambah asal</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="index.php?halaman=peminjambermasalah" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>peminjam Bermasalah</p>
