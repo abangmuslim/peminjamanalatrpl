@@ -94,14 +94,14 @@ require_once BASE_PATH . '/koneksi.php';
               break;
 
               // ===== ASAL =====
-            case "asal2":
-              include BASE_PATH . "/views/asal2/asal2.php";
+            case "jabatan":
+              include BASE_PATH . "/views/jabatan/jabatan.php";
               break;
-            case "tambahasal2":
-              include BASE_PATH . "/views/asal2/tambahasal2.php";
+            case "tambahjabatan":
+              include BASE_PATH . "/views/jabatan/tambahjabatan.php";
               break;
-            case "editasal2":
-              include BASE_PATH . "/views/asal2/editasal2.php";
+            case "editjabatan":
+              include BASE_PATH . "/views/jabatan/editjabatan.php";
               break;
 
               // ===== PEMINJAM =====
@@ -113,6 +113,39 @@ require_once BASE_PATH . '/koneksi.php';
               break;
             case "editpeminjam":
               include BASE_PATH . "/views/peminjam/editpeminjam.php";
+              break;
+
+              // ===== KATEGORI =====
+            case "kategori":
+              include BASE_PATH . "/views/kategori/kategori.php";
+              break;
+            case "tambahkategori":
+              include BASE_PATH . "/views/kategori/tambahkategori.php";
+              break;
+            case "editkategori":
+              include BASE_PATH . "/views/kategori/editkategori.php";
+              break;
+              
+              // ===== merk =====
+            case "merk":
+              include BASE_PATH . "/views/merk/merk.php";
+              break;
+            case "tambahmerk":
+              include BASE_PATH . "/views/merk/tambahmerk.php";
+              break;
+            case "editmerk":
+              include BASE_PATH . "/views/merk/editmerk.php";
+              break;
+
+              // ===== posisi =====
+            case "posisi":
+              include BASE_PATH . "/views/posisi/posisi.php";
+              break;
+            case "tambahposisi":
+              include BASE_PATH . "/views/posisi/tambahposisi.php";
+              break;
+            case "editposisi":
+              include BASE_PATH . "/views/posisi/editposisi.php";
               break;
 
               // ===== ALAT =====

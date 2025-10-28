@@ -1,7 +1,6 @@
 <!-- Main content -->
 <section class="content">
 
-  <!-- Default box -->
   <div class="card">
     <div class="card-header bg-gradient-primary mb-3">
       <div class="row">
@@ -22,8 +21,10 @@
       <thead>
         <tr>
           <th>No</th>
+          <th>Foto</th>
           <th>Nama Alat</th>
           <th>Kategori</th>
+          <th>Merk</th>
           <th>Kondisi</th>
           <th>Posisi</th>
           <th>Tanggal Pembelian</th>
@@ -32,28 +33,54 @@
       </thead>
       <tbody>
         <?php
-        include __DIR__ . '/../../koneksi.php'; // <-- path sudah diperbaiki
+        include "koneksi.php";
         $no = 1;
 
-        $sqlalat = mysqli_query($koneksi, "SELECT * FROM alat ORDER BY idalat ASC");
-        while ($dataalat = mysqli_fetch_array($sqlalat)) {
+        // ✅ JOIN semua relasi + ambil kolom foto
+        $sql = "
+          SELECT 
+            alat.idalat,
+            alat.namaalat,
+            alat.kondisi,
+            alat.tanggalpembelian,
+            alat.foto,
+            kategori.namakategori,
+            merk.namamerk,
+            posisi.namaposisi
+          FROM alat
+          LEFT JOIN kategori ON alat.idkategori = kategori.idkategori
+          LEFT JOIN merk ON alat.idmerk = merk.idmerk
+          LEFT JOIN posisi ON alat.idposisi = posisi.idposisi
+          ORDER BY alat.idalat ASC
+        ";
 
-          // Ambil nama kategori dari tabel kategori
-          $idkategori = $dataalat['idkategori'];
-          $sqlkategori = mysqli_query($koneksi, "SELECT * FROM kategori WHERE idkategori='$idkategori'");
-          $datakategori = mysqli_fetch_array($sqlkategori);
+        $result = mysqli_query($koneksi, $sql);
+
+        while ($row = mysqli_fetch_assoc($result)) {
+          // Format tanggal pembelian
+          $tglbeli = !empty($row['tanggalpembelian'])
+            ? date("d-m-Y", strtotime($row['tanggalpembelian']))
+            : "<span class='text-muted'>-</span>";
+
+          // Tampilkan foto alat
+          $fotoPath = "foto/alat/" . $row['foto'];
+          $fotoHtml = (!empty($row['foto']) && file_exists($fotoPath))
+            ? "<img src='$fotoPath' alt='Foto Alat' width='60' height='60' class='rounded shadow-sm'>"
+            : "<span class='text-muted'>Tidak ada foto</span>";
 
           echo "
             <tr>
-              <td>$no</td>
-              <td>{$dataalat['namaalat']}</td>
-              <td>{$datakategori['namakategori']}</td>
-              <td>{$dataalat['kondisi']}</td>
-              <td>{$dataalat['posisi']}</td>
-              <td>{$dataalat['tanggalpembelian']}</td>
-              <td>
-                <a href='index.php?halaman=editalat&idalat={$dataalat['idalat']}' class='btn btn-sm btn-warning' title='edit'><i class='fa fa-edit'></i></a>
-                <a href='db/dbalat.php?proses=hapus&idalat={$dataalat['idalat']}' class='btn btn-sm btn-danger' title='hapus' onclick=\"return confirm('Yakin ingin menghapus data ini?');\"><i class='fa fa-trash'></i></a>
+              <td>{$no}</td>
+              <td>{$fotoHtml}</td>
+              <td>{$row['namaalat']}</td>
+              <td>" . (!empty($row['namakategori']) ? $row['namakategori'] : '-') . "</td>
+              <td>" . (!empty($row['namamerk']) ? $row['namamerk'] : '-') . "</td>
+              <td>{$row['kondisi']}</td>
+              <td>" . (!empty($row['namaposisi']) ? $row['namaposisi'] : '-') . "</td>
+              <td>{$tglbeli}</td>
+              <td class='text-center'>
+                <a href='index.php?halaman=editalat&idalat={$row['idalat']}' class='btn btn-sm btn-warning' title='Edit'><i class='fa fa-edit'></i></a>
+                <a href='db/dbalat.php?proses=hapus&idalat={$row['idalat']}' class='btn btn-sm btn-danger' title='Hapus' onclick=\"return confirm('Yakin ingin menghapus data ini?');\"><i class='fa fa-trash'></i></a>
               </td>
             </tr>
           ";
@@ -64,13 +91,8 @@
     </table>
 
   </div>
-  <!-- /.card-body -->
-  <div class="card-footer">
-    Footer
-  </div>
-  <!-- /.card-footer-->
-  </div>
-  <!-- /.card -->
 
+  <div class="card-footer text-center text-muted">
+    <small>© 2025 - Sistem Peminjaman Alat RPL</small>
+  </div>
 </section>
-<!-- /.content -->

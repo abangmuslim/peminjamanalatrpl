@@ -57,6 +57,20 @@
                 </a>
               </li>              
             </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="index.php?halaman=jabatan" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>index jabatan</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="index.php?halaman=tambahjabatan" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Tambah jabatan</p>
+                </a>
+              </li>              
+            </ul>
           </li>
 
           <!-- BAGIAN PEMINJAM -->
@@ -111,19 +125,14 @@
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
+            
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="index.php?halaman=alat" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>index alat</p>
                 </a>
-              </li>
-              <li class="nav-item">
-                <a href="index.php?halaman=tambahalat" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Tambah alat</p>
-                </a>
-              </li>
+              </li>              
               <li class="nav-item">
                 <a href="index.php?halaman=alatbermasalah" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
@@ -131,6 +140,33 @@
                 </a>
               </li>
             </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="index.php?halaman=kategori" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>index kategori</p>
+                </a>
+              </li>                           
+            </ul>
+            
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="index.php?halaman=merk" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>index merk</p>
+                </a>
+              </li>                           
+            </ul>
+            
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="index.php?halaman=posisi" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>index posisi</p>
+                </a>
+              </li>                           
+            </ul>
+
           </li>
           
         </ul>
