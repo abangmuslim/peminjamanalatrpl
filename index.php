@@ -159,12 +159,29 @@ require_once BASE_PATH . '/koneksi.php';
               include BASE_PATH . "/views/alat/editalat.php";
               break;
 
+              // ===== peminjaman =====
+            case "daftarpeminjaman":
+              include BASE_PATH . "/views/peminjaman/daftarpeminjaman.php";
+              break;
+            case "tambahpeminjaman":
+              include BASE_PATH . "/views/peminjaman/tambahpeminjaman.php";
+              break;
+            case "daftarpengembalian":
+              include BASE_PATH . "/views/peminjaman/daftarpengembalian.php";
+              break;
+            case "prosespengembalian":
+              include BASE_PATH . "/views/peminjaman/prosespengembalian.php";
+              break;
+
+
+              
               // ===== DASHBOARD / DEFAULT =====
             case "dashboard":
             case "home":
               include BASE_PATH . "/views/dashboard.php";
               break;
 
+              
             default:
               include BASE_PATH . "/pages/notfound.php";
               break;

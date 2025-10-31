@@ -116,27 +116,27 @@
             </ul>
           </li>
 
-          <!-- BAGIAN alat -->
+          <!-- BAGIAN peminjaman -->
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-utensils"></i>
               <p>
-                Data alat
+                Data peminjaman
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
             
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="index.php?halaman=alat" class="nav-link">
+                <a href="index.php?halaman=peminjaman" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>index alat</p>
+                  <p>index peminjaman</p>
                 </a>
               </li>              
               <li class="nav-item">
-                <a href="index.php?halaman=alatbermasalah" class="nav-link">
+                <a href="index.php?halaman=peminjamanbermasalah" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>alat Bermasalah</p>
+                  <p>peminjaman Bermasalah</p>
                 </a>
               </li>
             </ul>
@@ -169,6 +169,41 @@
 
           </li>
           
+          <!-- BAGIAN peminjaman -->
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-utensils"></i>
+              <p>
+                Data peminjaman
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="index.php?halaman=daftarpeminjaman" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>daftar peminjaman</p>
+                </a>
+              </li>              
+              <li class="nav-item">
+                <a href="index.php?halaman=tambahpeminjaman" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>tambah peminjaman</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="index.php?halaman=daftarpengembalian" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>daftar pengembalian</p>
+                </a>
+              </li>                           
+            </ul>
+            
+
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
