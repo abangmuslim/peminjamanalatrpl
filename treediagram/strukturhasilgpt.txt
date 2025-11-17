@@ -1,0 +1,157 @@
+CMSMAHDI/                                        ← Root utama aplikasi
+│
+├─ pages/                                        ← Template layout untuk frontend & backend
+│  │
+│  ├─ user/                                      ← Layout khusus Admin/Petugas (dashboard)
+│  │  ├─ header.php                              ← Template <head>, meta, CSS AdminLTE
+│  │  ├─ navbar.php                              ← Navigasi atas (profile, logout)
+│  │  ├─ sidebar.php                             ← Sidebar admin: menu User, Kategori, Alat, dll
+│  │  └─ footer.php                              ← Script JS, plugin, closing body/html
+│  │
+│  ├─ peminjam/                                  ← Layout khusus Peminjam (dashboard sederhana)
+│  │  ├─ header.php                              ← Header layout peminjam
+│  │  ├─ navbar.php                              ← Navbar peminjam
+│  │  ├─ sidebar.php                             ← Menu peminjam (alat & komentar saja)
+│  │  └─ footer.php                              ← Footer layout peminjam
+│  │
+│  └─ landing/                                   ← Layout untuk halaman publik (front office)
+│     ├─ header.php                              ← Meta SEO, link CSS portal, script global
+│     ├─ navbar.php                              ← Menu Home, Kategori, Tentang, Login
+│     ├─ footer.php                              ← Footer portal + JS
+│     ├─ sidebar-left.php                        ← Sidebar kiri opsional (kategori & populer)
+│     └─ sidebar-right.php                       ← Sidebar kanan opsional (widget/tag)
+│
+│
+├─ assets/                                       ← Semua asset front-end
+│  ├─ dist/                                      ← Komponen AdminLTE 3
+│  │  ├─ css/                                    ← Style utama dashboard
+│  │  ├─ js/                                     ← JavaScript AdminLTE
+│  │  └─ img/                                    ← Gambar bawaan AdminLTE
+│  │
+│  └─ pluggins/                                  ← Plugin tambahan eksternal
+│     ├─ datatables/                             ← Library DataTables untuk tabel interaktif
+│     ├─ chartjs/                                ← Grafik ChartJS
+│     └─ summernote/                             ← Editor WYSIWYG Summernote
+│
+│
+├─ views/                                        ← Semua file halaman (logika tampilan)
+│  │
+│  ├─ otentikasiuser/                            ← Login untuk admin/petugas (tabel: user)
+│  │  ├─ login.php                               ← Form login admin/petugas
+│  │  ├─ register.php                            ← Form daftar user (opsional)
+│  │  ├─ logout.php                              ← Menghapus session user
+│  │  └─ proseslogin.php                         ← Cek login admin/petugas → set session
+│  │
+│  ├─ otentikasipeminjam/                        ← Login untuk peminjam (tabel: peminjam)
+│  │  ├─ login.php                               ← Form login peminjam
+│  │  ├─ register.php                            ← Daftar peminjam baru
+│  │  ├─ logout.php                              ← Logout peminjam
+│  │  └─ proseslogin.php                         ← Validasi akun peminjam
+│  │
+│  ├─ user/                                      ← Semua modul backend (admin & petugas)
+│  │  │
+│  │  ├─ user/                                   ← Modul manajemen user admin/petugas
+│  │  │  ├─ prosesuser.php                       ← CRUD user
+│  │  │  ├─ daftaruser.php                       ← Tabel daftar user
+│  │  │  ├─ tambahuser.php                       ← Form tambah user
+│  │  │  └─ edituser.php                         ← Edit data user
+│  │  │
+│  │  ├─ jabatan/                                ← Modul data jabatan user
+│  │  │  ├─ prosesjabatan.php                    ← CRUD jabatan
+│  │  │  ├─ daftarjabatan.php                    ← Tampil data jabatan
+│  │  │  ├─ tambahjabatan.php                    ← Tambah jabatan
+│  │  │  └─ editjabatan.php                      ← Edit jabatan
+│  │  │
+│  │  ├─ merk/                                   ← Modul data merk alat
+│  │  │  ├─ prosesmerk.php                       ← CRUD merk
+│  │  │  ├─ daftarmerk.php
+│  │  │  ├─ tambahmerk.php
+│  │  │  └─ editmerk.php
+│  │  │
+│  │  ├─ kategori/                               ← Modul kategori alat
+│  │  │  ├─ proseskategori.php                   ← CRUD kategori
+│  │  │  ├─ daftarkategori.php
+│  │  │  ├─ tambahkategori.php
+│  │  │  └─ editkategori.php
+│  │  │
+│  │  ├─ alat/                                   ← Modul manajemen alat
+│  │  │  ├─ prosesalat.php                       ← CRUD alat
+│  │  │  ├─ daftaralat.php
+│  │  │  ├─ tambahalat.php
+│  │  │  └─ editalat.php
+│  │  │
+│  │  ├─ komentar/                               ← Komentar alat
+│  │  │  ├─ proseskomentar.php                   ← CRUD komentar
+│  │  │  ├─ daftarkomentar.php
+│  │  │  ├─ tambahkomentar.php
+│  │  │  └─ editkomentar.php
+│  │  │
+│  │  ├─ asal/                                   ← Data asal instansi peminjam
+│  │  │  ├─ prosesasal.php
+│  │  │  ├─ daftarasal.php
+│  │  │  ├─ tambahasal.php
+│  │  │  └─ editasal.php
+│  │  │
+│  │  ├─ peminjam/                               ← Admin kelola data peminjam
+│  │  │  ├─ prosespeminjam.php
+│  │  │  ├─ daftarpeminjam.php
+│  │  │  ├─ tambahpeminjam.php
+│  │  │  └─ editpeminjam.php
+│  │  │
+│  │  ├─ peminjaman/                             ← Peminjaman alat (inti aplikasi)
+│  │  │  ├─ prosespeminjaman.php                 ← Insert + update status peminjaman
+│  │  │  ├─ daftarpeminjaman.php                 ← List peminjaman aktif & selesai
+│  │  │  ├─ tambahpeminjaman.php                 ← Form tambah peminjaman
+│  │  │  └─ editpeminjaman.php                   ← Edit data peminjaman
+│  │  │
+│  │  ├─ pengembalian/                           ← Proses pengembalian alat
+│  │  │  ├─ prosespengembalian.php               ← Update status → kembali
+│  │  │  ├─ daftarpengembalian.php
+│  │  │  ├─ tambahpengembalian.php
+│  │  │  └─ editpengembalian.php
+│  │  │
+│  │  ├─ laporan/                                ← Laporan-laporan cetak PDF
+│  │  │  ├─ daftarlaporan.php                    ← Pilih laporan
+│  │  │  └─ cetaklaporan.php                     ← Output PDF
+│  │  │
+│  │  ├─ dashboardadmin.php                      ← Dashboard admin utama
+│  │  └─ dashboardpetugas.php                    ← Dashboard untuk petugas
+│  │
+│  ├─ peminjam/                                  ← Dashboard khusus peminjam
+│  │  ├─ dashboardpeminjam.php
+│  │  └─ prosespeminjam.php
+│  │
+│  └─ landing/                                   ← Halaman publik
+│     ├─ home.php                                ← Tampilan awal daftar alat
+│     ├─ detilalat.php                           ← Detail informasi alat
+│     ├─ kategori.php                            ← Alat berdasarkan kategori
+│     ├─ tentang.php                             ← Tentang aplikasi
+│     ├─ kontak.php                              ← Hubungi admin
+│     ├─ 404.php                                 ← Error page
+│     └─ proseskomentar.php                      ← Insert komentar publik
+│
+│
+├─ includes/                                     ← File inti sistem (dibaca semua halaman)
+│  ├─ koneksi.php                                ← File koneksi database (mysqli)
+│  ├─ konfig.php                                 ← Base URL, site_name, timezone, dsb.
+│  ├─ ceksession.php                             ← Middleware pengecekan login
+│  ├─ fungsiupload.php                            ← Validasi & upload file (gambar)
+│  ├─ fungsivalidasi.php                          ← Sanitasi input user
+│  └─ htaccess/                                   ← Referensi aturan .htaccess keamanan
+│
+├─ database/
+│  └─ cmsmahdi.sql                                ← Dump database (struktur + data)
+│
+├─ uploads/                                      ← Semua file upload (public asset)
+│  ├─ user/                                      ← Foto profil user admin/petugas
+│  ├─ peminjam/                                  ← Foto profil peminjam
+│  ├─ alat/                                      ← Gambar alat
+│  ├─ peminjaman/                                ← Bukti peminjaman (opsional)
+│  ├─ komentar/                                  ← Foto lampiran komentar (opsional)
+│  └─ .htaccess                                  ← Blok PHP + allow image only (keamanan)
+│
+├─ dashboard.php                                 ← Router utama dashboard backend
+├─ index.php                                     ← Router halaman landing (front)
+├─ .htaccess                                     ← Redirect, rewrite, & blok akses folder penting
+├─ README.md                                     ← Dokumentasi project
+└─ struktur.txt                                   ← Dokumentasi struktur folder

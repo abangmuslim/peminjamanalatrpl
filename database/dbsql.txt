@@ -1,0 +1,241 @@
+-- CREATE DATABASE & USE
+CREATE DATABASE IF NOT EXISTS peminjamanalatrpl CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE peminjamanalatrpl;
+
+-- --------------------------------------------------------
+-- TABEL: jabatan
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS jabatan (
+  idjabatan INT NOT NULL AUTO_INCREMENT,
+  namajabatan VARCHAR(100) NOT NULL,
+  PRIMARY KEY (idjabatan)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO jabatan (idjabatan, namajabatan) VALUES
+(1, 'Siswa'),
+(2, 'Guru'),
+(3, 'TU'),
+(4, 'Tamu');
+
+-- --------------------------------------------------------
+-- TABEL: admin
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS admin (
+  idadmin INT NOT NULL AUTO_INCREMENT,
+  idjabatan INT DEFAULT NULL,
+  namaadmin VARCHAR(100) NOT NULL,
+  username VARCHAR(50) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  foto VARCHAR(255) DEFAULT NULL,
+  role ENUM('admin','petugas') NOT NULL DEFAULT 'admin',
+  PRIMARY KEY (idadmin),
+  KEY fk_admin_jabatan (idjabatan),
+  CONSTRAINT fk_admin_jabatan FOREIGN KEY (idjabatan) REFERENCES jabatan(idjabatan) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO admin (idadmin, idjabatan, namaadmin, username, password, foto, role) VALUES
+(1, NULL, 'Budi Santoso', 'budi', '12345', 'budi.jpg', 'admin'),
+(2, NULL, 'Siti Rahma', 'siti', '12345', 'siti.jpg', 'admin'),
+(3, NULL, 'Agus Prasetyo', 'agus', '12345', 'agus.jpg', 'admin'),
+(4, NULL, 'Dewi Lestari', 'dewi', '12345', 'dewi.jpg', 'admin'),
+(5, NULL, 'Rudi Hartono', 'rudi', '12345', 'rudi.jpg', 'admin'),
+(6, NULL, 'Nina Amelia', 'nina', '12345', 'nina.jpg', 'admin'),
+(7, NULL, 'Dian Putra', 'dian', '12345', 'dian.jpg', 'admin'),
+(8, NULL, 'Fajar Hidayat', 'fajar', '12345', 'fajar.jpg', 'admin'),
+(9, NULL, 'Mega Sari', 'mega', '12345', 'mega.jpg', 'admin'),
+(10, NULL, 'Andi Kurniawan', 'andi', '12345', 'andi.jpg', 'admin');
+
+-- --------------------------------------------------------
+-- TABEL: asal
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS asal (
+  idasal INT NOT NULL AUTO_INCREMENT,
+  namaasal VARCHAR(100) NOT NULL,
+  PRIMARY KEY (idasal)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO asal (idasal, namaasal) VALUES
+(1, 'Rekayasa Perangkat Lunak'),
+(2, 'Teknik Komputer dan Jaringan'),
+(3, 'Multimedia'),
+(4, 'Desain Komunikasi Visual'),
+(5, 'Teknik Otomotif'),
+(6, 'Teknik Elektronika Industri'),
+(7, 'Teknik Pendingin dan Tata Udara'),
+(8, 'Teknik Mesin'),
+(9, 'Administrasi Perkantoran'),
+(10, 'Akuntansi dan Keuangan Lembaga'),
+(15, 'Dewan Guru'),
+(16, 'Pihak Luar'),
+(17, 'Kepsek');
+
+-- --------------------------------------------------------
+-- TABEL: posisi
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS posisi (
+  idposisi INT NOT NULL AUTO_INCREMENT,
+  namaposisi VARCHAR(100) NOT NULL,
+  PRIMARY KEY (idposisi)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO posisi (idposisi, namaposisi) VALUES
+(1, 'Lab RPL'),
+(2, 'Kantor Guru RPL');
+
+-- --------------------------------------------------------
+-- TABEL: kategori
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS kategori (
+  idkategori INT NOT NULL AUTO_INCREMENT,
+  namakategori VARCHAR(100) NOT NULL,
+  PRIMARY KEY (idkategori)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO kategori (idkategori, namakategori) VALUES
+(1, 'Alat Tulis'),
+(2, 'Alat Elektronik'),
+(3, 'Alat Laboratorium'),
+(4, 'Alat Olahraga'),
+(5, 'Alat Musik'),
+(6, 'Alat Kebersihan'),
+(7, 'Alat Memasak'),
+(8, 'Alat Kantor'),
+(9, 'Alat Kesehatan'),
+(10, 'Alat Pertukangan'),
+(12, 'Alat Toilet');
+
+-- --------------------------------------------------------
+-- TABEL: merk
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS merk (
+  idmerk INT NOT NULL AUTO_INCREMENT,
+  namamerk VARCHAR(100) NOT NULL,
+  PRIMARY KEY (idmerk)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO merk (idmerk, namamerk) VALUES
+(2, 'Lenovo'),
+(3, 'Acer'),
+(4, 'Asus'),
+(5, 'HP'),
+(7, 'Epson');
+
+-- --------------------------------------------------------
+-- TABEL: alat
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS alat (
+  idalat INT NOT NULL AUTO_INCREMENT,
+  idkategori INT DEFAULT NULL,
+  idmerk INT DEFAULT NULL,
+  namaalat VARCHAR(100) NOT NULL,
+  kondisi VARCHAR(50) DEFAULT NULL,
+  idposisi INT DEFAULT NULL,
+  tanggalpembelian DATE DEFAULT NULL,
+  foto VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (idalat),
+  KEY fk_alat_kategori (idkategori),
+  KEY fk_alat_merk (idmerk),
+  KEY fk_alat_posisi (idposisi),
+  CONSTRAINT fk_alat_kategori FOREIGN KEY (idkategori) REFERENCES kategori(idkategori) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT fk_alat_merk FOREIGN KEY (idmerk) REFERENCES merk(idmerk) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT fk_alat_posisi FOREIGN KEY (idposisi) REFERENCES posisi(idposisi) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO alat (idalat, idkategori, idmerk, namaalat, kondisi, idposisi, tanggalpembelian, foto) VALUES
+(14, 6, 4, 'LCD Epson', 'Baik', 1, '2025-10-27', '1761632215_9 P a ahmadi (5).png'),
+(15, 2, 2, 'Laptop LOQ', 'Baik', 1, '2025-10-28', '1761632229_8 P C ahmadi (15).png'),
+(16, 2, 7, 'LCD Epson', 'Baik', 2, '2025-10-21', '1761632280_9 P a ahmadi (5).png');
+
+-- --------------------------------------------------------
+-- TABEL: peminjam
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS peminjam (
+  idpeminjam INT NOT NULL AUTO_INCREMENT,
+  idasal INT DEFAULT NULL,
+  namapeminjam VARCHAR(100) NOT NULL,
+  username VARCHAR(50) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  foto VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (idpeminjam),
+  KEY fk_peminjam_asal (idasal),
+  CONSTRAINT fk_peminjam_asal FOREIGN KEY (idasal) REFERENCES asal(idasal) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO peminjam (idpeminjam, idasal, namapeminjam, username, password, foto) VALUES
+(1, 2, 'Ahmadi Muslim Peminjam', 'ahmadipeminjam', 'd71c2ea2075d94c637080622b9d13b4f', '20251013055501_Gemini_Generated_Image_1jgvc71jgvc71jgv.png'),
+(29, 2, 'Shandra Dini', 'smkn1kb19', '12345', 'andre.jpg'),
+(30, 3, 'Shelsy Olivia Blezinsky', 'smkn1kb20', '12345', 'rika.jpg'),
+(31, 4, 'Sri Wahyunah', 'smkn1kb21', '12345', 'rika.jpg'),
+(44, 1, 'Ahmadi Muslim coba', 'ahmadipeminjamcoba', '202cb962ac59075b964b07152d234b70', '20251013050227_Gemini_Generated_Image_2b0qnu2b0qnu2b0q.png'),
+(45, 1, 'sriwahyunah', 'sriwahyunah', '10cc11dc13b56b4f861028db7d6cd200', '20251027062506_Gemini_Generated_Image_1jgvc71jgvc71jgv.png');
+
+-- --------------------------------------------------------
+-- TABEL: denda
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS denda (
+  iddenda INT NOT NULL AUTO_INCREMENT,
+  idpeminjaman INT NOT NULL,
+  tanggaldenda DATE NOT NULL,
+  jumlahdenda DECIMAL(10,2) NOT NULL,
+  keterangan VARCHAR(255) DEFAULT NULL,
+  status ENUM('belum dibayar','sudah dibayar') DEFAULT 'belum dibayar',
+  PRIMARY KEY (iddenda),
+  KEY fk_denda_peminjaman (idpeminjaman)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO denda (iddenda, idpeminjaman, tanggaldenda, jumlahdenda, keterangan, status) VALUES
+(1, 1, '2025-10-25', 10000.00, 'Terlambat 1 hari', 'sudah dibayar'),
+(2, 2, '2025-10-27', 20000.00, 'Terlambat 2 hari', 'belum dibayar'),
+(3, 3, '2025-10-29', 15000.00, 'Kerusakan ringan', 'sudah dibayar'),
+(4, 4, '2025-11-01', 5000.00, 'Terlambat 0.5 hari', 'belum dibayar'),
+(5, 5, '2025-11-02', 30000.00, 'Hilang sebagian alat', 'belum dibayar');
+
+-- --------------------------------------------------------
+-- TABEL: peminjaman
+-- (dibuat, tetapi TIDAK DI-INSERT data sesuai permintaan)
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS peminjaman (
+  idpeminjaman INT NOT NULL AUTO_INCREMENT,
+  idadmin INT NOT NULL,
+  idpeminjam INT NOT NULL,
+  foto VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (idpeminjaman),
+  KEY fk_peminjaman_admin (idadmin),
+  KEY fk_peminjaman_peminjam (idpeminjam),
+  CONSTRAINT peminjaman_ibfk_1 FOREIGN KEY (idadmin) REFERENCES admin(idadmin) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT peminjaman_ibfk_2 FOREIGN KEY (idpeminjam) REFERENCES peminjam(idpeminjam) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+-- TABEL: detilpeminjaman
+-- (dibuat, tetapi TIDAK DI-INSERT data sesuai permintaan)
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS detilpeminjaman (
+  iddetilpeminjaman INT NOT NULL AUTO_INCREMENT,
+  idpeminjaman INT NOT NULL,
+  idalat INT NOT NULL,
+  tanggalpinjam DATE DEFAULT NULL,
+  tanggalkembali DATE DEFAULT NULL,
+  tanggaldikembalikan DATE DEFAULT NULL,
+  durasipeminjaman INT DEFAULT 0,
+  jumlahharitelat INT DEFAULT 0,
+  status ENUM('terlambat','tidakterlambat') DEFAULT 'tidakterlambat',
+  keterangan ENUM('sudahkembali','belumkembali') DEFAULT 'belumkembali',
+  denda DECIMAL(10,2) DEFAULT 0.00,
+  PRIMARY KEY (iddetilpeminjaman),
+  KEY fk_detilpeminjaman_peminjaman (idpeminjaman),
+  KEY fk_detilpeminjaman_alat (idalat),
+  CONSTRAINT detilpeminjaman_ibfk_1 FOREIGN KEY (idpeminjaman) REFERENCES peminjaman(idpeminjaman) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT detilpeminjaman_ibfk_2 FOREIGN KEY (idalat) REFERENCES alat(idalat) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+-- INDEX/ADD CONSTRAINTS for previously created referencing tables
+-- (some constraints already declared inline above)
+-- --------------------------------------------------------
+
+-- Jika ingin, kamu bisa menambahkan data contoh untuk peminjaman dan detilpeminjaman
+-- nanti setelah meninjau struktur dan relasi (saat ini sesuai permintaan: tidak di-insert).
+
+-- TRANSACTION COMMIT not strictly necessary here since statements are DDL/DML, but safe:
+COMMIT;

@@ -1,0 +1,20 @@
+# Mencegah eksekusi file PHP di folder uploads
+<FilesMatch "\.(php|php5|php7|phtml)$">
+    Deny from all
+</FilesMatch>
+
+# Blokir file berbahaya lainnya
+<FilesMatch "\.(html|htm|js|py|pl|cgi|sh)$">
+    Deny from all
+</FilesMatch>
+
+# Izinkan gambar dan file umum untuk diakses publik
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|pdf|doc|docx)$">
+    Allow from all
+</FilesMatch>
+
+# Nonaktifkan script execution
+Options -ExecCGI
+
+# Nonaktifkan indexing folder
+Options -Indexes

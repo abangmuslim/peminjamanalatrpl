@@ -1,0 +1,37 @@
+# ============================
+# SECURITY & BASIC SETTINGS
+# ============================
+
+Options -Indexes
+
+# Allow PHP Execution
+<FilesMatch "\.(php)$">
+    Require all granted
+</FilesMatch>
+
+# ============================
+# BLOCK SENSITIVE FOLDERS
+# ============================
+RewriteEngine On
+
+# Blok folder yang tidak boleh diakses via URL
+RewriteRule ^includes/ - [F,L]
+RewriteRule ^database/ - [F,L]
+RewriteRule ^db/ - [F,L]
+RewriteRule ^private/ - [F,L]
+
+# ============================
+# BLOCK DIRECT ACCESS TO FILE TYPES
+# ============================
+
+# Konfig, SQL, log, environment
+<FilesMatch "\.(sql|env|ini|log|txt|md)$">
+    Require all denied
+</FilesMatch>
+
+# ============================
+# LANDING PAGE DEFAULT
+# ============================
+
+# Jika user akses domain langsung → tampilkan halaman landing CMS
+DirectoryIndex index.php
