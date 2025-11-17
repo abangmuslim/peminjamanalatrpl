@@ -1,0 +1,152 @@
+CMSMAHDI/
+│
+├─ pages/
+│  │
+│  ├─ user/                     ← layout untuk role admin (back office)
+│  │  ├─ header.php             ← head, link CSS, judul halaman
+│  │  ├─ navbar.php             ← navigasi atas admin
+│  │  ├─ sidebar.php            ← sidebar menu admin (kelola user, kategori, alat, komentar)
+│  │  └─ footer.php             ← script JS dan footer dashboard
+│  │
+│  ├─ peminjam/                 ← layout untuk role peminjam (back office)
+│  │  ├─ header.php
+│  │  ├─ navbar.php
+│  │  ├─ sidebar.php            ← menu lebih sederhana (hanya alat & komentar)
+│  │  └─ footer.php
+│  │
+│  └─ landing/                  ← layout tampilan publik (front office / portal berita)
+│     ├─ header.php             ← head HTML umum, meta tag SEO, CSS portal
+│     ├─ navbar.php             ← menu utama (Home, Kategori, Tentang, Login)
+│     ├─ footer.php             ← footer publik, hak cipta, JS
+│     ├─ sidebar-left.php       ← opsional: daftar kategori, berita populer
+│     └─ sidebar-right.php      ← opsional: widget, tag cloud, iklan, dsb.
+││
+├─ asset/
+│  ├─ dist/                     ← komponen utama AdminLTE (CSS, JS, icons, dsb)
+│  │  ├─ css/
+│  │  ├─ js/
+│  │  └─ img/
+│  │
+│  └─ pluggin/                  ← plugin tambahan AdminLTE (chart, datatables, wysiwyg, dsb)
+│     ├─ datatables/
+│     ├─ chartjs/
+│     └─ summernote/
+│
+├─ views/
+│  │
+│  ├─ otentikasiuser/           ← halaman otentikasi (login, register, logout) untuk user dari tabel user
+│  │  ├─ login.php              ← form login user (admin/petugas)
+│  │  ├─ register.php           ← form pendaftaran (opsional)
+│  │  ├─ logout.php             ← proses logout (hapus session)
+│  │  └─ proseslogin.php        ← proses backend login (cek ke DB, set session)
+│  │
+│  ├─ otentikasipeminjam/       ← halaman otentikasi (login, register, logout) untuk peminjam dari tabel peminjam
+│  │  ├─ login.php              ← form login peminjam (peminjam)
+│  │  ├─ register.php           ← form pendaftaran (opsional)
+│  │  ├─ logout.php             ← proses logout (hapus session)
+│  │  └─ proseslogin.php        ← proses backend login (cek ke DB, set session)
+│  │
+│  ├─ user/                     ← alat dashboard untuk user login (extend dari pages/user atau pages/peminjam)
+│  │  │
+│  │  ├─ user/
+│  │  │  ├─ prosesuser.php      ← logic CRUD user
+│  │  │  ├─ daftaruser.php      ← list user untuk admin
+│  │  │  ├─ tambahuser.php      ← form tambah user
+│  │  │  └─ edituser.php        ← form edit user
+│  │  │
+│  │  ├─ kategori/
+│  │  │  ├─ proseskategori.php    ← logic CRUD kategori
+│  │  │  ├─ daftarkategori.php
+│  │  │  ├─ tambahkategori.php
+│  │  │  └─ editkategori.php
+│  │  │
+│  │  ├─ jabatan/
+│  │  │  ├─ prosesjabatan.php    ← logic CRUD kategori
+│  │  │  ├─ daftarjabatan.php
+│  │  │  ├─ tambahjabatan.php
+│  │  │  └─ editjabatan.php
+│  │  │
+│  │  ├─ asal/
+│  │  │  ├─ prosesasal.php    ← logic CRUD asal
+│  │  │  ├─ daftarasal.php
+│  │  │  ├─ tambahasal.php
+│  │  │  └─ editasal.php
+│  │  │
+│  │  ├─ merk/
+│  │  │  ├─ prosesmerk.php    ← logic CRUD merk
+│  │  │  ├─ daftarmerk.php
+│  │  │  ├─ tambahmerk.php
+│  │  │  └─ editmerk.php
+│  │  │
+│  │  ├─ komentar/
+│  │  │  ├─ proseskomentar.php    ← logic CRUD komentar
+│  │  │  ├─ daftarkomentar.php
+│  │  │  ├─ tambahkomentar.php
+│  │  │  └─ editkomentar.php
+│  │  │
+│  │  ├─ alat/
+│  │  │  ├─ prosesalat.php    ← logic CRUD alat
+│  │  │  ├─ daftaralat.php
+│  │  │  ├─ tambahalat.php
+│  │  │  └─ editalat.php
+│  │  │
+│  │  ├─ peminjam/
+│  │  │  ├─ prosespeminjam.php    ← logic CRUD peminjam
+│  │  │  ├─ daftarpeminjam.php
+│  │  │  ├─ tambahpeminjam.php
+│  │  │  └─ editpeminjam.php
+│  │  │
+│  │  ├─ peminjaman/
+│  │  │  ├─ prosespeminjaman.php    ← logic CRUD peminjaman
+│  │  │  ├─ daftarpeminjaman.php
+│  │  │  ├─ tambahpeminjaman.php
+│  │  │  └─ editpeminjaman.php
+│  │  │
+│  │  ├─ pengembalian/
+│  │  │  ├─ prosespengembalian.php    ← logic CRUD pengembalian
+│  │  │  ├─ daftarpengembalian.php
+│  │  │  ├─ tambahpengembalian.php
+│  │  │  └─ editpengembalian.php
+│  │  │
+│  │  ├─ laporan/
+│  │  │  ├─ daftarlaporan.php
+│  │  │  └─ cetaklaporan.php
+│  │  │
+│  │  ├─ dashboardadmin.php     ← dashboard utama untuk admin
+│  │  └─ dashboardpeminjam.php    ← dashboard utama untuk peminjam
+│  │
+│  └─ landing/                  ← tampilan publik (extend dari pages/landing)
+│     ├─ home.php               ← halaman utama portal (daftar artikel)
+│     ├─ detilalat.php        ← halaman detail artikel
+│     ├─ kategori.php           ← daftar artikel per kategori
+│     ├─ tentang.php            ← halaman tentang CMS
+│     ├─ kontak.php             ← halaman kontak (opsional)
+│     ├─ 404.php                ← halaman notfound
+│     └─ proseskomentar.php     ← logic komentar publik (insert & tampil)
+│
+│
+├─ includes/                    ← fungsi & keamanan (dibaca semua halaman)
+│  ├─ koneksi.php               ← koneksi database (utama)
+│  ├─ konfig.php                ← variabel global (base_url, site_name, dll)
+│  ├─ ceksession.php            ← pengecekan login, redirect jika belum login
+│  ├─ fungsiupload.php          ← helper upload gambar (validasi tipe & ukuran)
+│  ├─ fungsivalidasi.php        ← sanitasi input & validasi form
+│  └─ htaccess/                 ← file keamanan .htaccess untuk referensi
+│
+│
+├─ database/
+│  └─ cmsmahdi.sql              ← file dump struktur database (opsional)
+│
+├─ uploads/                     ← penyimpanan file publik (gambar user & alat)
+│  ├─ user/                     ← foto profil user
+│  ├─ peminjam/                 ← foto profil peminjam
+│  ├─ alat/                     ← gambar alat
+│  ├─ peminjaman/               ← gambar peminjaman
+│  ├─ komentar/                 ← gambar dari komentar (opsional)
+│  └─ .htaccess                 ← keamanan: blok eksekusi file PHP
+│
+├─ dashboard.php                ← pusat halaman backend (routing admin/peminjam)
+├─ index.php                    ← pusat halaman publik (routing landing)
+├─ .htaccess                    ← redirect URL, blok akses direktori penting
+├─ README.md                    ← dokumentasi umum proyek
+└─ struktur.txt                 ← dokumentasi struktur folder (file ini)
