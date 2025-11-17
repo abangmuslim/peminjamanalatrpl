@@ -21,13 +21,13 @@ CMSMAHDI/
 │     ├─ sidebar-left.php       ← opsional: daftar kategori, berita populer
 │     └─ sidebar-right.php      ← opsional: widget, tag cloud, iklan, dsb.
 ││
-├─ asset/
+├─ assets/
 │  ├─ dist/                     ← komponen utama AdminLTE (CSS, JS, icons, dsb)
 │  │  ├─ css/
 │  │  ├─ js/
 │  │  └─ img/
 │  │
-│  └─ pluggin/                  ← plugin tambahan AdminLTE (chart, datatables, wysiwyg, dsb)
+│  └─ pluggins/                  ← plugin tambahan AdminLTE (chart, datatables, wysiwyg, dsb)
 │     ├─ datatables/
 │     ├─ chartjs/
 │     └─ summernote/
@@ -54,23 +54,11 @@ CMSMAHDI/
 │  │  │  ├─ tambahuser.php      ← form tambah user
 │  │  │  └─ edituser.php        ← form edit user
 │  │  │
-│  │  ├─ kategori/
-│  │  │  ├─ proseskategori.php    ← logic CRUD kategori
-│  │  │  ├─ daftarkategori.php
-│  │  │  ├─ tambahkategori.php
-│  │  │  └─ editkategori.php
-│  │  │
 │  │  ├─ jabatan/
 │  │  │  ├─ prosesjabatan.php    ← logic CRUD kategori
 │  │  │  ├─ daftarjabatan.php
 │  │  │  ├─ tambahjabatan.php
 │  │  │  └─ editjabatan.php
-│  │  │
-│  │  ├─ asal/
-│  │  │  ├─ prosesasal.php    ← logic CRUD asal
-│  │  │  ├─ daftarasal.php
-│  │  │  ├─ tambahasal.php
-│  │  │  └─ editasal.php
 │  │  │
 │  │  ├─ merk/
 │  │  │  ├─ prosesmerk.php    ← logic CRUD merk
@@ -78,17 +66,29 @@ CMSMAHDI/
 │  │  │  ├─ tambahmerk.php
 │  │  │  └─ editmerk.php
 │  │  │
-│  │  ├─ komentar/
-│  │  │  ├─ proseskomentar.php    ← logic CRUD komentar
-│  │  │  ├─ daftarkomentar.php
-│  │  │  ├─ tambahkomentar.php
-│  │  │  └─ editkomentar.php
+│  │  ├─ kategori/
+│  │  │  ├─ proseskategori.php    ← logic CRUD kategori
+│  │  │  ├─ daftarkategori.php
+│  │  │  ├─ tambahkategori.php
+│  │  │  └─ editkategori.php
 │  │  │
 │  │  ├─ alat/
 │  │  │  ├─ prosesalat.php    ← logic CRUD alat
 │  │  │  ├─ daftaralat.php
 │  │  │  ├─ tambahalat.php
 │  │  │  └─ editalat.php
+│  │  │
+│  │  ├─ komentar/
+│  │  │  ├─ proseskomentar.php    ← logic CRUD komentar
+│  │  │  ├─ daftarkomentar.php
+│  │  │  ├─ tambahkomentar.php
+│  │  │  └─ editkomentar.php
+│  │  │
+│  │  ├─ asal/
+│  │  │  ├─ prosesasal.php    ← logic CRUD asal
+│  │  │  ├─ daftarasal.php
+│  │  │  ├─ tambahasal.php
+│  │  │  └─ editasal.php
 │  │  │
 │  │  ├─ peminjam/
 │  │  │  ├─ prosespeminjam.php    ← logic CRUD peminjam
