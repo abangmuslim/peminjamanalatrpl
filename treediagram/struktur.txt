@@ -113,7 +113,11 @@ CMSMAHDI/
 │  │  │  └─ cetaklaporan.php
 │  │  │
 │  │  ├─ dashboardadmin.php     ← dashboard utama untuk admin
-│  │  └─ dashboardpeminjam.php    ← dashboard utama untuk peminjam
+│  │  └─ dashboardpetugas.php    ← dashboard utama untuk peminjam
+│  │
+│  ├─ peminjam/                 ← alat dashboard untuk user login (extend dari pages/user atau pages/peminjam)
+│  │  ├─ dashboardpeminjam.php              
+│  │  └─ prosespeminjam.php        
 │  │
 │  └─ landing/                  ← tampilan publik (extend dari pages/landing)
 │     ├─ home.php               ← halaman utama portal (daftar artikel)
