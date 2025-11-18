@@ -1,7 +1,7 @@
 <?php
 // ============================================================
-// File: views/otentikasiuser/login.php
-// Login aplikasi peminjamanalatrpl
+// File: views/otentikasipeminjam/loginpeminjam.php
+// Login aplikasi peminjamanalatrpl untuk role peminjam
 // ============================================================
 
 // Include path & konfigurasi
@@ -13,21 +13,13 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Jika user sudah login, redirect sesuai role
-if (isset($_SESSION['role'])) {
-    if ($_SESSION['role'] === 'admin') {
-        header("Location: " . BASE_URL . "?hal=dashboardadmin");
-        exit();
-    } elseif ($_SESSION['role'] === 'petugas') {
-        header("Location: " . BASE_URL . "?hal=dashboardpetugas");
-        exit();
-    } elseif ($_SESSION['role'] === 'peminjam') {
-        header("Location: " . BASE_URL . "?hal=dashboardpeminjam");
-        exit();
-    }
+// Jika peminjam sudah login, redirect ke dashboard
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'peminjam') {
+    header("Location: " . BASE_URL . "?hal=dashboardpeminjam");
+    exit();
 }
 
-// Ambil pesan error dari redirect prosesloginuser.php
+// Ambil pesan error dari redirect prosesloginpeminjam.php
 $error = $_GET['pesan'] ?? '';
 ?>
 
@@ -53,13 +45,13 @@ $error = $_GET['pesan'] ?? '';
       <div class="col-md-5">
         <div class="card shadow-lg border-0">
           <div class="card-body p-4">
-            <h3 class="text-center mb-4">Login User (Admin/Petugas)</h3>
+            <h3 class="text-center mb-4">Login Peminjam</h3>
 
             <?php if (!empty($error)): ?>
               <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
 
-            <form method="POST" action="?hal=prosesloginuser">
+            <form method="POST" action="?hal=prosesloginpeminjam">
               <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
                 <input type="text" name="username" id="username" class="form-control" required>
@@ -72,7 +64,7 @@ $error = $_GET['pesan'] ?? '';
               </div>
 
               <div class="d-grid">
-                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="submit" class="btn btn-warning">Login</button>
               </div>
             </form>
 

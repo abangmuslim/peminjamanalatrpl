@@ -1,4 +1,4 @@
-CMSMAHDI/
+PEMINJAMANALATRPL/
 │
 ├─ pages/
 │  │
@@ -11,7 +11,6 @@ CMSMAHDI/
 │  ├─ peminjam/                 ← layout untuk role peminjam (back office)
 │  │  ├─ header.php
 │  │  ├─ navbar.php
-│  │  ├─ sidebar.php            ← menu lebih sederhana (hanya alat & komentar)
 │  │  └─ footer.php
 │  │
 │  └─ landing/                  ← layout tampilan publik (front office / portal berita)
@@ -35,16 +34,17 @@ CMSMAHDI/
 ├─ views/
 │  │
 │  ├─ otentikasiuser/           ← halaman otentikasi (login, register, logout) untuk user dari tabel user
-│  │  ├─ login.php              ← form login user (admin/petugas)
-│  │  ├─ register.php           ← form pendaftaran (opsional)
-│  │  ├─ logout.php             ← proses logout (hapus session)
-│  │  └─ proseslogin.php        ← proses backend login (cek ke DB, set session)
+│  │  ├─ loginuser.php              ← form login user (admin/petugas)
+│  │  ├─ registeruser.php           ← form pendaftaran (opsional)
+│  │  ├─ logoutuser.php             ← proses logout (hapus session)
+│  │  └─ prosesloginuser.php        ← proses backend login (cek ke DB, set session)
 │  │
 │  ├─ otentikasipeminjam/       ← halaman otentikasi (login, register, logout) untuk peminjam dari tabel peminjam
-│  │  ├─ login.php              ← form login peminjam (peminjam)
-│  │  ├─ register.php           ← form pendaftaran (opsional)
-│  │  ├─ logout.php             ← proses logout (hapus session)
-│  │  └─ proseslogin.php        ← proses backend login (cek ke DB, set session)
+│  │  ├─ loginpeminjam.php              ← form login peminjam (peminjam)
+│  │  ├─ registerpeminjam.php           ← form pendaftaran (opsional)
+│  │  ├─ prosesregisterpeminjam.php     ← proses pendaftaran (opsional)
+│  │  ├─ logoutpeminjam.php             ← proses logout (hapus session)
+│  │  └─ prosesloginpeminjam.php        ← proses backend login (cek ke DB, set session)
 │  │
 │  ├─ user/                     ← alat dashboard untuk user login (extend dari pages/user atau pages/peminjam)
 │  │  │
@@ -133,7 +133,8 @@ CMSMAHDI/
 │  ├─ koneksi.php               ← koneksi database (utama)
 │  ├─ konfig.php                ← variabel global (base_url, site_name, dll)
 │  ├─ path.php                  
-│  ├─ ceksession.php            ← pengecekan login, redirect jika belum login
+│  ├─ ceksession.php            ← pengecekan login, redirect jika belum loginuser
+│  ├─ ceksessionpeminjam.php    ← pengecekan login, redirect jika belum loginpeminjam
 │  ├─ fungsiupload.php          ← helper upload gambar (validasi tipe & ukuran)
 │  ├─ fungsivalidasi.php        ← sanitasi input & validasi form
 │  └─ htaccess/                 ← file keamanan .htaccess untuk referensi

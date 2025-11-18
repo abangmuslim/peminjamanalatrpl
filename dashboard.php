@@ -1,96 +1,144 @@
 <?php
-// =======================================
-// File: dashboard.php - ROOT PeminjamanAlatRPL
-// Pusat routing backend sesuai role (admin, petugas, peminjam)
-// =======================================
+// ============================================================
+// File: views/peminjam/dashboardpeminjam.php
+// Dashboard mandiri peminjam (plug-and-play, tanpa sidebar)
+// ============================================================
 
 require_once __DIR__ . '/includes/path.php';
-require_once INCLUDES_PATH . 'konfig.php';
-require_once INCLUDES_PATH . 'koneksi.php';
-require_once INCLUDES_PATH . 'ceksession.php';
+require_once __DIR__ . '/includes/konfig.php';
+require_once __DIR__ . '/includes/koneksi.php';
+require_once __DIR__ . '/includes/fungsivalidasi.php';
+session_start();
 
-// Layout default
-$layoutPath = 'pages/user';
-$viewFolder = 'views/user';
-
-// =======================================
-// 1️⃣ Tentukan role & halaman default
-// =======================================
-$role = $_SESSION['role'] ?? '';
-
-switch($role) {
-    case 'admin':
-        $defaultPage = 'dashboardadmin';
-        break;
-    case 'petugas':
-        $defaultPage = 'dashboardpetugas';
-        $viewFolder = 'views/petugas';
-        break;
-    case 'peminjam':
-        $defaultPage = 'dashboardpeminjam';
-        $viewFolder = 'views/peminjam';
-        break;
-    default:
-        header("Location: index.php?hal=loginuser");
-        exit;
+// ===============================
+// 1️⃣ Cek login peminjam
+// ===============================
+if (!isset($_SESSION['idpeminjam'])) {
+    header("Location: " . BASE_URL . "?hal=otentikasipeminjam/loginpeminjam");
+    exit;
 }
 
-// =======================================
-// 2️⃣ Halaman yang diminta
-// =======================================
-$hal = $_GET['hal'] ?? $defaultPage;
+$idpeminjam = $_SESSION['idpeminjam'];
 
-// =======================================
-// 3️⃣ Batasi akses berdasarkan role
-// =======================================
-$allowed_petugas = [
-    'dashboardpetugas',
-    'alat/daftaralat','alat/tambahalat','alat/editalat','alat/prosesalat',
-    'peminjaman/daftarpeminjaman','peminjaman/prosespeminjaman',
-    'laporan/daftarlaporan'
-];
+// ===============================
+// 2️⃣ Ambil data peminjam
+// ===============================
+$stmt = $koneksi->prepare("SELECT * FROM peminjam WHERE idpeminjam = ? LIMIT 1");
+$stmt->bind_param("i", $idpeminjam);
+$stmt->execute();
+$peminjam = $stmt->get_result()->fetch_assoc();
+$stmt->close();
 
-$allowed_peminjam = [
-    'dashboardpeminjam',
-    'peminjaman/riwayat','peminjaman/pinjam','peminjaman/prosespinjam'
-];
+// ===============================
+// 3️⃣ Statistik peminjaman
+// ===============================
+$stmt1 = $koneksi->prepare("SELECT COUNT(*) AS totalpinjam FROM peminjaman WHERE idpeminjam = ?");
+$stmt1->bind_param("i", $idpeminjam);
+$stmt1->execute();
+$totalPinjam = $stmt1->get_result()->fetch_assoc()['totalpinjam'] ?? 0;
+$stmt1->close();
 
-if ($role === 'petugas' && !in_array($hal, $allowed_petugas)) {
-    $hal = $defaultPage;
-}
-if ($role === 'peminjam' && !in_array($hal, $allowed_peminjam)) {
-    $hal = $defaultPage;
-}
+$stmt2 = $koneksi->prepare("
+    SELECT COUNT(*) AS belumkembali
+    FROM detilpeminjaman dp
+    JOIN peminjaman p ON dp.idpeminjaman = p.idpeminjaman
+    WHERE p.idpeminjam = ? AND dp.keterangan = 'belumkembali'
+");
+$stmt2->bind_param("i", $idpeminjam);
+$stmt2->execute();
+$belumKembali = $stmt2->get_result()->fetch_assoc()['belumkembali'] ?? 0;
+$stmt2->close();
 
-// =======================================
-// 4️⃣ Bangun path file view secara dinamis
-// =======================================
-$halParts = explode('/', $hal);
-$file = (count($halParts) > 1)
-    ? BASE_PATH . "/{$viewFolder}/" . implode('/', $halParts) . ".php"
-    : BASE_PATH . "/{$viewFolder}/{$hal}.php";
+// ===============================
+// 4️⃣ Ambil 5 peminjaman terbaru
+// ===============================
+$stmt3 = $koneksi->prepare("
+    SELECT p.idpeminjaman, dp.tanggalpinjam, dp.tanggalkembali, dp.keterangan, a.namaalat
+    FROM peminjaman p
+    JOIN detilpeminjaman dp ON dp.idpeminjaman = p.idpeminjaman
+    JOIN alat a ON a.idalat = dp.idalat
+    WHERE p.idpeminjam = ?
+    ORDER BY dp.tanggalpinjam DESC
+    LIMIT 5
+");
+$stmt3->bind_param("i", $idpeminjam);
+$stmt3->execute();
+$latestPinjam = $stmt3->get_result();
+$stmt3->close();
 
-// =======================================
-// 5️⃣ Fallback otomatis
-// =======================================
-if (!file_exists($file)) {
-    $file = BASE_PATH . "/{$viewFolder}/{$defaultPage}.php";
-}
+// ===============================
+// 5️⃣ Include layout peminjam
+// ===============================
+include PAGES_PATH . 'peminjam/header.php';
+include PAGES_PATH . 'peminjam/navbar.php';
+?>
 
-// =======================================
-// 6️⃣ Load template AdminLTE + view
-// =======================================
-include BASE_PATH . "/{$layoutPath}/header.php";
-include BASE_PATH . "/{$layoutPath}/navbar.php";
+<div class="container mt-4">
+    <h2>Selamat Datang, <?= htmlspecialchars($peminjam['namapeminjam'] ?? 'Peminjam') ?>!</h2>
+    <p>Status akun: <strong><?= htmlspecialchars($peminjam['status'] ?? '-') ?></strong></p>
 
-if ($role === 'petugas') {
-    include BASE_PATH . "/{$layoutPath}/sidebarpetugas.php";
-} elseif ($role === 'peminjam') {
-    include BASE_PATH . "/{$layoutPath}/sidebarpeminjam.php";
-} else {
-    include BASE_PATH . "/{$layoutPath}/sidebar.php"; // admin
-}
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5>Total Peminjaman</h5>
+                    <p class="display-4"><?= $totalPinjam ?></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5>Alat Belum Dikembalikan</h5>
+                    <p class="display-4"><?= $belumKembali ?></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5>Tambah Peminjaman</h5>
+                    <a href="<?= BASE_URL ?>views/peminjam/peminjaman/tambahpeminjaman.php" class="btn btn-success mt-2">+ Peminjaman Baru</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-include $file;
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h4>Peminjaman Terbaru</h4>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nama Alat</th>
+                            <th>Tanggal Pinjam</th>
+                            <th>Tanggal Kembali</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if ($latestPinjam && $latestPinjam->num_rows > 0): ?>
+                            <?php $no = 1; while($row = $latestPinjam->fetch_assoc()): ?>
+                                <tr>
+                                    <td><?= $no++ ?></td>
+                                    <td><?= htmlspecialchars($row['namaalat']) ?></td>
+                                    <td><?= htmlspecialchars($row['tanggalpinjam']) ?></td>
+                                    <td><?= htmlspecialchars($row['tanggalkembali']) ?></td>
+                                    <td><?= htmlspecialchars($row['keterangan']) ?></td>
+                                </tr>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="5" class="text-center">Belum ada peminjaman</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-include BASE_PATH . "/{$layoutPath}/footer.php";
+<?php include PAGES_PATH . 'peminjam/footer.php'; ?>

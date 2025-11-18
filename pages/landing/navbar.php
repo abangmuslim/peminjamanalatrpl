@@ -67,8 +67,7 @@ $hal = isset($_GET['hal']) ? $_GET['hal'] : 'home';
 
                 <!-- LOGIN PEMINJAM -->
                 <li class="nav-item mr-2">
-                    <a href="<?= BASE_URL ?>?hal=loginpeminjam"
-                        class="btn btn-primary btn-sm <?= ($hal == 'loginpeminjam') ? 'active' : '' ?>">
+                    <a href="<?= BASE_URL ?>?hal=loginpeminjam" class="btn btn-primary btn-sm <?= ($hal == 'loginpeminjam') ? 'active' : '' ?>">
                         <i class="fas fa-user"></i> Login Peminjam
                     </a>
                 </li>
