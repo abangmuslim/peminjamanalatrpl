@@ -1,148 +1,125 @@
 <?php
-// ===============================================
-// File : dashboard.php  
-// Routing Backend untuk Admin, Petugas, Peminjam
-// ===============================================
+// ==================================================
+// File: dashboard.php (ROOT)
+// Routing halaman backend setelah login peminjamanalatrpl
+// ==================================================
 
 require_once __DIR__ . '/includes/path.php';
 require_once INCLUDES_PATH . 'konfig.php';
 require_once INCLUDES_PATH . 'koneksi.php';
 require_once INCLUDES_PATH . 'ceksession.php';
 
+session_start();
 
 // ==================================================
-// 1️⃣ Ambil role login
+// 1️⃣ Validasi Role Login
 // ==================================================
 $role = $_SESSION['role'] ?? '';
 
+if (!$role) {
+    header("Location: index.php?hal=login");
+    exit;
+}
 
-// ==================================================
-// 2️⃣ Tentukan layout + view folder + halaman default
-// ==================================================
-$layoutPath = 'pages/user';       // default layout: admin/petugas
-$viewFolder = 'views/user';
-$defaultPage = 'dashboardadmin';  // default admin
+// Default layout (AdminLTE)
+$layoutPath = 'pages/user';
 
+// Tentukan folder views berdasarkan role
 if ($role === 'admin') {
-
+    $viewFolder = 'views/user';
     $defaultPage = 'dashboardadmin';
-
-} elseif ($role === 'petugas') {
-
+}
+elseif ($role === 'petugas') {
+    $viewFolder = 'views/petugas';
     $defaultPage = 'dashboardpetugas';
-
-} elseif ($role === 'peminjam') {
-
-    $layoutPath  = 'pages/peminjam'; 
-    $viewFolder  = 'views/peminjam';
+}
+elseif ($role === 'peminjam') {
+    $viewFolder = 'views/peminjam';
     $defaultPage = 'dashboardpeminjam';
-
-} else {
+}
+else {
     header("Location: index.php");
     exit;
 }
 
-
 // ==================================================
-// 3️⃣ Ambil parameter halaman (?hal=...)
+// 2️⃣ Tentukan halaman yang diminta
 // ==================================================
 $hal = $_GET['hal'] ?? $defaultPage;
-
+$hal = trim($hal);
 
 // ==================================================
-// 4️⃣ Batasi akses berdasarkan role
+// 3️⃣ Batasi Akses Berdasarkan Role
 // ==================================================
+//
+// ADMIN = akses semua
+// PETUGAS = akses data alat, transaksi, laporan
+// PEMINJAM = akses dashboard + riwayat + peminjaman
+//
+
 $allowed_petugas = [
     'dashboardpetugas',
     'alat/daftaralat', 'alat/tambahalat', 'alat/editalat', 'alat/prosesalat',
-    'peminjam/daftarpeminjam', 'peminjam/detailpeminjam',
-    'peminjaman/daftarpeminjaman', 'peminjaman/tambahpeminjaman',
-    'peminjaman/editpeminjaman', 'peminjaman/prosespeminjaman',
-    'pengembalian/daftarpengembalian', 'pengembalian/prosespengembalian',
-    'komentar/daftarkomentar', 'komentar/editkomentar', 'komentar/proseskomentar',
+    'peminjaman/daftarpeminjaman', 'peminjaman/prosespeminjaman',
     'laporan/daftarlaporan'
 ];
 
 $allowed_peminjam = [
     'dashboardpeminjam',
-    'alat/daftaralat', 'alat/detailalat',
-    'peminjaman/pengajuan', 'peminjaman/prosespengajuan',
-    'peminjaman/riwayat'
+    'peminjaman/riwayat',
+    'peminjaman/pinjam',
+    'peminjaman/prosespinjam'
 ];
 
-
 if ($role === 'petugas') {
-    if (!in_array($hal, $allowed_petugas) && !str_starts_with($hal, 'dashboard')) {
+    if (!in_array($hal, $allowed_petugas)) {
         $hal = $defaultPage;
     }
 }
 
 if ($role === 'peminjam') {
-    if (!in_array($hal, $allowed_peminjam) && !str_starts_with($hal, 'dashboard')) {
+    if (!in_array($hal, $allowed_peminjam)) {
         $hal = $defaultPage;
     }
 }
 
+// ==================================================
+// 4️⃣ Tentukan lokasi file tampilan
+// ==================================================
+$halParts = explode('/', $hal);
 
-// ==================================================
-// 5️⃣ Bangun path file view berdasarkan URL
-// ==================================================
-$ex = explode('/', $hal);
-if (count($ex) > 1) {
-    $file = BASE_PATH . "/{$viewFolder}/" . implode('/', $ex) . ".php";
+if (count($halParts) > 1) {
+    $file = BASE_PATH . "/{$viewFolder}/" . implode('/', $halParts) . ".php";
 } else {
     $file = BASE_PATH . "/{$viewFolder}/{$hal}.php";
 }
 
-
 // ==================================================
-// 6️⃣ Fallback otomatis berdasarkan folder (modul)
-// ==================================================
-if (!file_exists($file)) {
-
-    $parent = $ex[0] ?? '';
-
-    $fallback = [
-        'user'         => 'user/daftaruser',
-        'jabatan'      => 'jabatan/daftarjabatan',
-        'merk'         => 'merk/daftarmerk',
-        'kategori'     => 'kategori/daftarkategori',
-        'alat'         => 'alat/daftaralat',
-        'komentar'     => 'komentar/daftarkomentar',
-        'asal'         => 'asal/daftarasal',
-        'peminjam'     => 'peminjam/daftarpeminjam',
-        'peminjaman'   => 'peminjaman/daftarpeminjaman',
-        'pengembalian' => 'pengembalian/daftarpengembalian',
-        'laporan'      => 'laporan/daftarlaporan'
-    ];
-
-    if (isset($fallback[$parent])) {
-        $file = BASE_PATH . "/{$viewFolder}/" . $fallback[$parent] . ".php";
-    }
-}
-
-
-// ==================================================
-// 7️⃣ Validasi terakhir
+// 5️⃣ Jika file tidak ditemukan → fallback dashboard
 // ==================================================
 if (!file_exists($file)) {
     $file = BASE_PATH . "/{$viewFolder}/{$defaultPage}.php";
 }
 
+// ==================================================
+// 6️⃣ LOAD TEMPLATE (AdminLTE) + HALAMAN TUJUAN
+// ==================================================
 
-// ==================================================
-// 8️⃣ Tampilkan layout
-// ==================================================
 include BASE_PATH . "/{$layoutPath}/header.php";
 include BASE_PATH . "/{$layoutPath}/navbar.php";
 
-// sidebar berbeda antara admin/petugas vs peminjam
-if ($role !== 'peminjam') {
-    include BASE_PATH . "/{$layoutPath}/sidebar.php";
-} else {
-    include BASE_PATH . "/{$layoutPath}/sidebar.php";
+// Sidebar berdasarkan role
+if ($role === 'petugas') {
+    include BASE_PATH . "/{$layoutPath}/sidebarpetugas.php";
+}
+elseif ($role === 'peminjam') {
+    include BASE_PATH . "/{$layoutPath}/sidebarpeminjam.php";
+}
+else {
+    include BASE_PATH . "/{$layoutPath}/sidebar.php"; // admin
 }
 
 include $file;
 
 include BASE_PATH . "/{$layoutPath}/footer.php";
+?>

@@ -1,29 +1,31 @@
 <?php
 // ===============================================
-// HEADER LAYOUT (Front Office)
-// Berisi tag <head>, meta SEO, link CSS, dan judul situs
-// File ini di-include pada setiap tampilan landing
+// File: pages/user/header.php
+// Layout Header Dashboard Backend (Admin/Petugas)
 // ===============================================
-?>
 
+require_once __DIR__ . '/../../includes/path.php';
+require_once INCLUDES_PATH . 'konfig.php';
+require_once INCLUDES_PATH . 'koneksi.php';
+require_once INCLUDES_PATH . 'ceksession.php';
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= $site_name ?> — Dashboard</title>
 
-    <!-- SEO -->
-    <meta name="description" content="Portal berita dan informasi terbaru CMSMAHDI">
-    <meta name="keywords" content="berita, artikel, informasi, cmsmahdi">
-    <meta name="author" content="CMSMAHDI">
+    <!-- AdminLTE CSS -->
+    <link rel="stylesheet" href="<?= BASE_URL ?>assets/adminlte/css/adminlte.min.css">
 
-    <title><?= $site_name ?> - Portal Berita</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="<?= BASE_URL ?>assets/plugins/fontawesome-free/css/all.min.css">
 
-    <!-- CSS utama -->
-    <link rel="stylesheet" href="<?= $base_url ?>/assets/css/style.css">
-
-    <!-- Bootstrap (opsional jika dipakai) -->
-    <link rel="stylesheet" href="<?= $base_url ?>/assets/vendor/bootstrap/bootstrap.min.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700">
 
 </head>
-<body>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">

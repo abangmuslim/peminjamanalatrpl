@@ -17,8 +17,8 @@ CMSMAHDI/
 │  └─ landing/                  ← layout tampilan publik (front office / portal berita)
 │     ├─ header.php             ← head HTML umum, meta tag SEO, CSS portal
 │     ├─ navbar.php             ← menu utama (Home, Kategori, Tentang, Login)
+│     ├─ hero.php             
 │     ├─ footer.php             ← footer publik, hak cipta, JS
-│     ├─ sidebar-left.php       ← opsional: daftar kategori, berita populer
 │     └─ sidebar-right.php      ← opsional: widget, tag cloud, iklan, dsb.
 ││
 ├─ assets/
@@ -132,6 +132,7 @@ CMSMAHDI/
 ├─ includes/                    ← fungsi & keamanan (dibaca semua halaman)
 │  ├─ koneksi.php               ← koneksi database (utama)
 │  ├─ konfig.php                ← variabel global (base_url, site_name, dll)
+│  ├─ path.php                  
 │  ├─ ceksession.php            ← pengecekan login, redirect jika belum login
 │  ├─ fungsiupload.php          ← helper upload gambar (validasi tipe & ukuran)
 │  ├─ fungsivalidasi.php        ← sanitasi input & validasi form
