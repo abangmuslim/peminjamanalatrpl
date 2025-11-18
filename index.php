@@ -49,6 +49,10 @@ switch ($halaman) {
         $file_view = VIEWS_PATH . 'landing/kontak.php';
         break;
 
+    case 'hashbycrypt':
+        $file_view = VIEWS_PATH . 'landing/hashbycrypt.php';
+        break;
+
 
     // ====================================================
     //        FORM LOGIN USER (dari tabel user)

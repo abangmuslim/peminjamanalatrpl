@@ -1,17 +1,22 @@
 <?php
-// =======================================================
-// File: views/otentikasiuser/logout.php
-// Deskripsi: Logout dan hapus semua session
-// =======================================================
+// =======================================
+// File: views/otentikasiuser/logoutuser.php
+// Deskripsi: Logout user & redirect ke halaman login
+// =======================================
 
-require_once '../../includes/path.php';
-session_start();
+// Mulai session
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Load konfigurasi & path
+require_once __DIR__ . '/../../includes/path.php';
+require_once __DIR__ . '/../../includes/koneksi.php';
 
 // Hapus semua session
-session_unset();
+$_SESSION = [];
 session_destroy();
 
-// Redirect kembali ke landing
-header("Location: " . BASE_URL);
+// Redirect ke halaman login user
+header("Location: " . BASE_URL . "?hal=loginuser");
 exit;
-?>

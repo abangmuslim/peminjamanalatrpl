@@ -53,6 +53,13 @@ $hal = isset($_GET['hal']) ? $_GET['hal'] : 'home';
                         Kontak
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a href="<?= BASE_URL ?>?hal=hashbycrypt"
+                        class="nav-link <?= ($hal == 'hashbycrypt') ? 'active' : '' ?>">
+                        Hash BCRYPT
+                    </a>
+                </li>
             </ul>
 
             <!-- RIGHT MENU -->

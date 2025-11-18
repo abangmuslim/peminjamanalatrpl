@@ -4,111 +4,47 @@
 // Login aplikasi peminjamanalatrpl
 // ============================================================
 
-// Import path helper
+// Include path & konfigurasi
 require_once __DIR__ . '/../../includes/path.php';
 require_once INCLUDES_PATH . 'konfig.php';
-require_once INCLUDES_PATH . 'koneksi.php';
-require_once INCLUDES_PATH . 'fungsivalidasi.php';
 
 // Pastikan sesi aktif
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// ============================================================
-// 1️⃣ Cek apakah user sudah login sebelumnya
-// ============================================================
+// Jika user sudah login, redirect sesuai role
 if (isset($_SESSION['role'])) {
     if ($_SESSION['role'] === 'admin') {
-        header("Location: " . BASE_URL . "pages/user/dashboardadmin.php");
+        header("Location: " . BASE_URL . "?hal=dashboardadmin");
         exit();
     } elseif ($_SESSION['role'] === 'petugas') {
-        header("Location: " . BASE_URL . "pages/user/dashboardpetugas.php");
+        header("Location: " . BASE_URL . "?hal=dashboardpetugas");
         exit();
     } elseif ($_SESSION['role'] === 'peminjam') {
-        header("Location: " . BASE_URL . "pages/user/dashboardpeminjam.php");
+        header("Location: " . BASE_URL . "?hal=dashboardpeminjam");
         exit();
     }
 }
 
-// ============================================================
-// 2️⃣ Inisialisasi error
-// ============================================================
-$error = "";
-
-// ============================================================
-// 3️⃣ Proses login
-// ============================================================
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $username = bersihkan($_POST['username'] ?? '');
-    $password = $_POST['password'] ?? '';
-
-    if ($username === '' || $password === '') {
-        $error = "Username dan password wajib diisi.";
-    } else {
-
-        $stmt = $koneksi->prepare("SELECT * FROM user WHERE username = ? LIMIT 1");
-        if ($stmt) {
-            $stmt->bind_param("s", $username);
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            if ($result->num_rows === 1) {
-                $user = $result->fetch_assoc();
-
-                if (password_verify($password, $user['password'])) {
-
-                    // Simpan sesi
-                    $_SESSION['iduser']   = $user['iduser'];
-                    $_SESSION['idjabatan'] = $user['idjabatan'];
-                    $_SESSION['namauser'] = $user['namauser'];
-                    $_SESSION['username'] = $user['username'];
-                    $_SESSION['role']     = $user['role'];
-
-                    // Redirect berdasarkan role
-                    if ($user['role'] === 'admin') {
-                        header("Location: " . BASE_URL . "pages/user/dashboardadmin.php");
-                        exit();
-                    } elseif ($user['role'] === 'petugas') {
-                        header("Location: " . BASE_URL . "pages/user/dashboardpetugas.php");
-                        exit();
-                    } else { // peminjam
-                        header("Location: " . BASE_URL . "pages/user/dashboardpeminjam.php");
-                        exit();
-                    }
-
-                } else {
-                    $error = "Password salah.";
-                }
-
-            } else {
-                $error = "Username tidak ditemukan.";
-            }
-
-            $stmt->close();
-        } else {
-            $error = "Terjadi kesalahan sistem (query gagal).";
-        }
-    }
-}
-
+// Ambil pesan error dari redirect prosesloginuser.php
+$error = $_GET['pesan'] ?? '';
 ?>
 
 <style>
-  .login-wrapper {
+.login-wrapper {
     min-height: calc(100vh - 100px);
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-  .toggle-password {
+}
+.toggle-password {
     position: absolute;
     right: 15px;
     top: 38px;
     cursor: pointer;
     color: #777;
-  }
+}
 </style>
 
 <div class="login-wrapper">
@@ -143,7 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="text-center mt-3">
               <a href="<?= BASE_URL ?>">← Kembali ke Beranda</a>
             </div>
-
           </div>
         </div>
       </div>
