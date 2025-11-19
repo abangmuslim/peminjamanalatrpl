@@ -6,7 +6,6 @@
 require_once __DIR__ . '/../../includes/path.php';
 require_once INCLUDES_PATH . 'konfig.php';
 require_once INCLUDES_PATH . 'koneksi.php';
-session_start();
 
 // ===============================
 // Cek login peminjam

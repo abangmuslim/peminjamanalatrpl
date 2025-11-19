@@ -1,7 +1,7 @@
 <?php
 // =======================================
 // File: views/user/dashboardadmin.php
-// Deskripsi: Dashboard Admin PeminjamanAlatRPL (final)
+// Deskripsi: Dashboard Admin PeminjamanAlatRPL (final, termasuk sidebar)
 // =======================================
 
 // Statistik ringkas
@@ -43,6 +43,14 @@ $userTerbaru = mysqli_query($koneksi, "
     ORDER BY iduser DESC
     LIMIT 5
 ");
+
+// ===============================
+// Include layout
+// ===============================
+include PAGES_PATH . 'user/header.php';
+include PAGES_PATH . 'user/navbar.php';
+include PAGES_PATH . 'user/sidebar.php'; // ✅ sidebar sudah include
+
 ?>
 
 <div class="content-wrapper p-3">
@@ -126,6 +134,8 @@ $userTerbaru = mysqli_query($koneksi, "
     </div>
   </section>
 </div>
+
+<?php include PAGES_PATH . 'user/footer.php'; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
