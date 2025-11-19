@@ -117,7 +117,8 @@ PEMINJAMANALATRPL/
 │  │
 │  ├─ peminjam/                 ← alat dashboard untuk user login (extend dari pages/user atau pages/peminjam)
 │  │  ├─ dashboardpeminjam.php              
-│  │  └─ prosespeminjam.php        
+│  │  ├─ tambahpeminjaman.php              
+│  │  └─ prosespeminjaman.php        
 │  │
 │  └─ landing/                  ← tampilan publik (extend dari pages/landing)
 │     ├─ home.php               ← halaman utama portal (daftar artikel)

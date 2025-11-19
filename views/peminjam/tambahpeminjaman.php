@@ -1,61 +1,72 @@
 <?php
-// ===============================================
+// ============================================================
 // File: views/peminjam/tambahpeminjaman.php
 // Deskripsi: Form tambah peminjaman untuk peminjam
-// ===============================================
+// ============================================================
+
+session_start();
 require_once __DIR__ . '/../../includes/path.php';
-require_once INCLUDES_PATH . 'konfig.php';
+require_once INCLUDES_PATH . 'koneksi.php';
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-if (!isset($_SESSION['login']) || $_SESSION['role'] !== 'peminjam') {
-    header("Location: " . BASE_URL . "?hal=loginpeminjam");
+// Cek login peminjam
+if (!isset($_SESSION['idpeminjam'])) {
+    header("Location: ?hal=loginpeminjam");
     exit;
 }
 
-$pesan = $_GET['pesan'] ?? '';
+$idpeminjam = $_SESSION['idpeminjam'];
 
-// Ambil daftar alat dari database
-require_once INCLUDES_PATH . 'koneksi.php';
-$alat_result = $koneksi->query("SELECT idalat, namaalat FROM alat ORDER BY namaalat ASC");
+// Ambil daftar alat yang tersedia
+$sql = "SELECT a.idalat, a.namaalat, k.namakategori, m.namamerk, p.namaposisi, a.kondisi
+        FROM alat a
+        JOIN kategori k ON a.idkategori = k.idkategori
+        JOIN merk m ON a.idmerk = m.idmerk
+        JOIN posisi p ON a.idposisi = p.idposisi
+        WHERE a.kondisi = 'baik'";
+$stmt = $koneksi->prepare($sql);
+$stmt->execute();
+$alat_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
+<?php include PAGES_PATH . 'peminjam/header.php'; ?>
+
 <div class="container mt-4">
-    <h3>Tambah Peminjaman</h3>
+    <h2>Tambah Peminjaman</h2>
+    <form action="?hal=prosespeminjaman" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="idpeminjam" value="<?= htmlspecialchars($idpeminjam) ?>">
 
-    <?php if (!empty($pesan)): ?>
-        <div class="alert alert-warning"><?= htmlspecialchars($pesan) ?></div>
-    <?php endif; ?>
-
-    <form action="?hal=prosespeminjamanpeminjam" method="POST" enctype="multipart/form-data">
         <div class="mb-3">
-            <label for="idalat" class="form-label">Pilih Alat</label>
-            <select name="idalat" id="idalat" class="form-control" required>
-                <option value="">-- Pilih Alat --</option>
-                <?php while ($row = $alat_result->fetch_assoc()): ?>
-                    <option value="<?= $row['idalat'] ?>"><?= htmlspecialchars($row['namaalat']) ?></option>
-                <?php endwhile; ?>
+            <label for="alat" class="form-label">Pilih Alat</label>
+            <select name="idalat[]" id="alat" class="form-select" multiple required>
+                <?php foreach($alat_list as $alat): ?>
+                    <option value="<?= $alat['idalat'] ?>">
+                        <?= htmlspecialchars($alat['namaalat']) ?> 
+                        (<?= htmlspecialchars($alat['namakategori']) ?> - <?= htmlspecialchars($alat['namamerk']) ?> - <?= htmlspecialchars($alat['namaposisi']) ?>)
+                    </option>
+                <?php endforeach; ?>
             </select>
+            <small class="form-text text-muted">Tekan Ctrl/Cmd untuk pilih lebih dari satu alat.</small>
         </div>
 
         <div class="mb-3">
             <label for="tanggalpinjam" class="form-label">Tanggal Pinjam</label>
-            <input type="date" name="tanggalpinjam" id="tanggalpinjam" class="form-control" required>
+            <input type="date" name="tanggalpinjam" id="tanggalpinjam" class="form-control" value="<?= date('Y-m-d') ?>" required>
         </div>
 
         <div class="mb-3">
             <label for="tanggalkembali" class="form-label">Tanggal Kembali</label>
-            <input type="date" name="tanggalkembali" id="tanggalkembali" class="form-control" required>
+            <input type="date" name="tanggalkembali" id="tanggalkembali" class="form-control" value="<?= date('Y-m-d', strtotime('+1 day')) ?>" required>
         </div>
 
         <div class="mb-3">
-            <label for="foto" class="form-label">Foto (opsional)</label>
-            <input type="file" name="foto" id="foto" class="form-control" accept=".jpg,.jpeg,.png">
+            <label for="foto" class="form-label">Foto (Opsional)</label>
+            <input type="file" name="foto" id="foto" class="form-control" accept="image/*">
         </div>
 
-        <button type="submit" class="btn btn-primary">Ajukan Peminjaman</button>
-        <a href="<?= BASE_URL ?>?hal=dashboardpeminjam" class="btn btn-secondary">Batal</a>
+        <button type="submit" class="btn btn-primary">Pinjam Sekarang</button>
+        <a href="?hal=dashboardpeminjam" class="btn btn-secondary">Batal</a>
     </form>
 </div>
+
+<?php include PAGES_PATH . 'peminjam/footer.php'; ?>
