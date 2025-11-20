@@ -94,6 +94,7 @@ PEMINJAMANALATRPL/
 │  │  ├─ peminjam/
 │  │  │  ├─ prosespeminjam.php    ← logic CRUD peminjam
 │  │  │  ├─ daftarpeminjam.php
+│  │  │  ├─ tampilpeminjam.php
 │  │  │  ├─ tambahpeminjam.php
 │  │  │  └─ editpeminjam.php
 │  │  │

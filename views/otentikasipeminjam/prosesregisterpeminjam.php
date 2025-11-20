@@ -1,12 +1,11 @@
 <?php
 // ============================================================
 // File: views/otentikasipeminjam/prosesregisterpeminjam.php
-// Proses simpan data register peminjam
+// Proses registrasi peminjam baru
 // ============================================================
 
-$ROOT = realpath(__DIR__ . '/../../') . DIRECTORY_SEPARATOR;
-require_once $ROOT . 'includes/koneksi.php';
-require_once $ROOT . 'includes/fungsivalidasi.php';
+require_once __DIR__ . '/../../includes/path.php';
+require_once INCLUDES_PATH . 'koneksi.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: " . BASE_URL . "?hal=registerpeminjam");
@@ -14,45 +13,43 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Ambil input
-$namapeminjam = bersihkan($_POST['namapeminjam'] ?? '');
-$username     = bersihkan($_POST['username'] ?? '');
-$password     = $_POST['password'] ?? '';
-$idasal       = (int) ($_POST['idasal'] ?? 0);
-$status       = $_POST['status'] ?? 'pending';
+$namapeminjam = trim($_POST['namapeminjam']);
+$username = trim($_POST['username']);
+$password = $_POST['password'];
+$idasal = $_POST['idasal'] ?: null;
 
-// Validasi sederhana
-if (!$namapeminjam || !$username || !$password || !$idasal) {
-    header("Location: " . BASE_URL . "?hal=registerpeminjam&pesan=" . urlencode("Isi semua kolom"));
-    exit;
-}
-
-// Cek username sudah ada?
-$stmt = $koneksi->prepare("SELECT * FROM peminjam WHERE username = ? LIMIT 1");
+// Validasi username unik
+$stmt = $koneksi->prepare("SELECT idpeminjam FROM peminjam WHERE username=? LIMIT 1");
 $stmt->bind_param("s", $username);
 $stmt->execute();
-if ($stmt->get_result()->num_rows > 0) {
-    header("Location: " . BASE_URL . "?hal=registerpeminjam&pesan=" . urlencode("Username sudah terpakai"));
+$stmt->store_result();
+
+if ($stmt->num_rows > 0) {
+    header("Location: " . BASE_URL . "?hal=registerpeminjam&error=Username sudah digunakan");
     exit;
 }
+$stmt->close();
 
-// Upload foto (opsional)
-$fotoPath = null;
+// Hash password
+$hashPassword = password_hash($password, PASSWORD_DEFAULT);
+
+// Proses upload foto
+$fotoFile = null;
 if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
-    $fotoTmp = $_FILES['foto']['tmp_name'];
-    $fotoName = time() . "_" . basename($_FILES['foto']['name']);
-    $target = $ROOT . 'uploads/peminjam/' . $fotoName;
-    if (move_uploaded_file($fotoTmp, $target)) {
-        $fotoPath = $fotoName;
-    }
+    $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+    $fotoFile = 'peminjam_' . time() . '.' . $ext;
+    move_uploaded_file($_FILES['foto']['tmp_name'], __DIR__ . '/../../uploads/peminjam/' . $fotoFile);
 }
 
-// Insert ke DB
-$stmt = $koneksi->prepare("INSERT INTO peminjam (idasal, namapeminjam, username, password, foto, status) VALUES (?, ?, ?, ?, ?, ?)");
-$stmt->bind_param("isssss", $idasal, $namapeminjam, $username, $password, $fotoPath, $status);
-if ($stmt->execute()) {
-    header("Location: " . BASE_URL . "?hal=loginpeminjam&pesan=" . urlencode("Registrasi berhasil, menunggu persetujuan"));
-    exit;
+// Insert ke database
+$stmt = $koneksi->prepare("INSERT INTO peminjam (idasal, namapeminjam, username, password, foto, status) VALUES (?, ?, ?, ?, ?, 'pending')");
+$stmt->bind_param("issss", $idasal, $namapeminjam, $username, $hashPassword, $fotoFile);
+$success = $stmt->execute();
+$stmt->close();
+
+if ($success) {
+    header("Location: " . BASE_URL . "?hal=loginpeminjam&success=Registrasi berhasil! Silakan login.");
 } else {
-    header("Location: " . BASE_URL . "?hal=registerpeminjam&pesan=" . urlencode("Gagal registrasi, coba lagi"));
-    exit;
+    header("Location: " . BASE_URL . "?hal=registerpeminjam&error=Terjadi kesalahan, coba lagi.");
 }
+exit;

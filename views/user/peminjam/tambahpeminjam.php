@@ -1,86 +1,57 @@
-<!-- Main content -->
-<section class="content">
+<?php
+require_once __DIR__ . '/../../../includes/path.php';
+require_once INCLUDES_PATH . 'koneksi.php';
+require_once INCLUDES_PATH . 'ceksession.php';
 
-  <!-- Default box -->
-  <div class="card text-xs">
-    <div class="card-header bg-primary">
-      <h2 class="card-title">Tambah Peminjam</h2>
-    </div>
+// Ambil data asal untuk dropdown
+$asal = mysqli_query($koneksi, "SELECT * FROM asal ORDER BY namaasal ASC");
+?>
 
-    <div class="card-body">
-      <!-- general form elements -->
-      <div class="card card-warning">
-        <form action="db/dbpeminjam.php?proses=tambah" method="POST" enctype="multipart/form-data">
-          <div class="card-body-sm ml-2">
+<?php include PAGES_PATH . 'user/header.php'; ?>
+<?php include PAGES_PATH . 'user/navbar.php'; ?>
+<?php include PAGES_PATH . 'user/sidebar.php'; ?>
 
-            <div class="form-group">
-              <label for="namapeminjam">Nama Peminjam</label>
-              <input type="text" class="form-control" id="namapeminjam" name="namapeminjam" placeholder="Masukkan nama peminjam" required>
-            </div>
+<div class="content">
+    <section class="content-header"><h1>Tambah Peminjam</h1></section>
+    <section class="content">
 
-            <div class="form-group">
-              <label for="username">Username</label>
-              <input type="text" class="form-control" id="username" name="username" placeholder="Masukkan username" required>
-              <small class="text-muted">Username harus unik.</small>
-            </div>
+        <form method="POST" action="<?= BASE_URL ?>views/user/peminjam/prosespeminjam.php" enctype="multipart/form-data">
+            <input type="hidden" name="aksi" value="tambah">
 
             <div class="form-group">
-              <label for="password">Password</label>
-              <input type="password" class="form-control" id="password" name="password" placeholder="Masukkan password" required>
+                <label>Nama Peminjam</label>
+                <input type="text" name="namapeminjam" class="form-control" required>
             </div>
-
-            <input type="checkbox" onclick="togglePassword()"> Tampilkan Password
-
-            <script>
-              function togglePassword() {
-                var x = document.getElementById("password");
-                if (x.type === "password") {
-                  x.type = "text";
-                } else {
-                  x.type = "password";
-                }
-              }
-            </script>
-
-            <!-- koneksi untuk input references -->
-            <?php
-            include("koneksi.php");
-            $sqlasal = mysqli_query($koneksi, "SELECT * FROM asal ORDER BY namaasal ASC");
-
-            echo "
-            <div class='form-group'>
-              <label>Select Asal</label>
-              <select class='form-control' name='idasal'>
-                <option value='' disabled selected>-- Pilih Asal --</option>";
-            while ($dataasal = mysqli_fetch_array($sqlasal)) {
-              echo "<option value='{$dataasal['idasal']}'>{$dataasal['namaasal']}</option>";
-            }
-            echo "
-              </select>
-            </div>";
-            ?>
 
             <div class="form-group">
-              <label for="foto">Upload Foto Peminjam</label>
-              <input type="file" name="foto" id="foto" class="form-control" accept="image/*">
-              <small class="text-muted">Upload foto (opsional)</small>
+                <label>Asal</label>
+                <select name="idasal" class="form-control" required>
+                    <option value="">-- Pilih Asal --</option>
+                    <?php while ($a = mysqli_fetch_assoc($asal)): ?>
+                        <option value="<?= $a['idasal'] ?>"><?= htmlspecialchars($a['namaasal']) ?></option>
+                    <?php endwhile; ?>
+                </select>
             </div>
 
-            <div class="card-footer">
-              <button type="submit" class="btn btn-primary float-right ml-3"><i class="fa fa-save"></i> Simpan</button>
-              <button type="reset" class="btn btn-warning float-right"><i class="fa fa-retweet"></i> Reset</button>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" class="form-control" required>
             </div>
 
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label>Foto</label>
+                <input type="file" name="foto" class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Simpan</button>
         </form>
-      </div>
-      <!-- /.card -->
-    </div>
-    <!-- /.card-body -->
-    <div class="card-footer">
-      Footer
-    </div>
-  </div>
-  <!-- /.card -->
 
-</section>
-<!-- /.content -->
+    </section>
+</div>
+
+<?php include PAGES_PATH . 'user/footer.php'; ?>

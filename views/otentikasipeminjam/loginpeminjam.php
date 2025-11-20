@@ -10,13 +10,13 @@ require_once INCLUDES_PATH . 'konfig.php';
 
 // Pastikan sesi aktif
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+  session_start();
 }
 
 // Jika peminjam sudah login, redirect ke dashboard
 if (isset($_SESSION['role']) && $_SESSION['role'] === 'peminjam') {
-    header("Location: " . BASE_URL . "?hal=dashboardpeminjam");
-    exit();
+  header("Location: " . BASE_URL . "?hal=dashboardpeminjam");
+  exit();
 }
 
 // Ambil pesan error dari redirect prosesloginpeminjam.php
@@ -24,19 +24,20 @@ $error = $_GET['pesan'] ?? '';
 ?>
 
 <style>
-.login-wrapper {
+  .login-wrapper {
     min-height: calc(100vh - 100px);
     display: flex;
     justify-content: center;
     align-items: center;
-}
-.toggle-password {
+  }
+
+  .toggle-password {
     position: absolute;
     right: 15px;
     top: 38px;
     cursor: pointer;
     color: #777;
-}
+  }
 </style>
 
 <div class="login-wrapper">
@@ -44,8 +45,13 @@ $error = $_GET['pesan'] ?? '';
     <div class="row justify-content-center">
       <div class="col-md-5">
         <div class="card shadow-lg border-0">
+
+          <!-- HEADER KUNING -->
+          <div class="card-header bg-primary text-center py-3">
+            <h3 class="m-0 fw-bold">Login Peminjam</h3>
+          </div>
+
           <div class="card-body p-4">
-            <h3 class="text-center mb-4">Login Peminjam</h3>
 
             <?php if (!empty($error)): ?>
               <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
@@ -63,24 +69,30 @@ $error = $_GET['pesan'] ?? '';
                 <span class="toggle-password" onclick="togglePassword()">👁️</span>
               </div>
 
-              <div class="d-grid">
-                <button type="submit" class="btn btn-warning">Login</button>
+              <div class="d-flex justify-content-between mb-3">
+                <a href="<?= BASE_URL ?>?hal=otentikasipeminjam/registerpeminjam"
+                  class="btn btn-warning px-4">
+                  <b>Daftar akun Baru</b>
+                </a>
+                <button type="submit" class="btn btn-primary px-4">Login</button>
               </div>
             </form>
 
-            <div class="text-center mt-3">
+            <div class="text-center mt-1">
               <a href="<?= BASE_URL ?>">← Kembali ke Beranda</a>
             </div>
+
           </div>
         </div>
+
       </div>
     </div>
   </div>
 </div>
 
 <script>
-function togglePassword() {
-  const pass = document.getElementById('password');
-  pass.type = pass.type === 'password' ? 'text' : 'password';
-}
+  function togglePassword() {
+    const pass = document.getElementById('password');
+    pass.type = pass.type === 'password' ? 'text' : 'password';
+  }
 </script>

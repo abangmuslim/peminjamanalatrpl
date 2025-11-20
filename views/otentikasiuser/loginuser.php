@@ -10,21 +10,21 @@ require_once INCLUDES_PATH . 'konfig.php';
 
 // Pastikan sesi aktif
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+  session_start();
 }
 
 // Jika user sudah login, redirect sesuai role
 if (isset($_SESSION['role'])) {
-    if ($_SESSION['role'] === 'admin') {
-        header("Location: " . BASE_URL . "?hal=dashboardadmin");
-        exit();
-    } elseif ($_SESSION['role'] === 'petugas') {
-        header("Location: " . BASE_URL . "?hal=dashboardpetugas");
-        exit();
-    } elseif ($_SESSION['role'] === 'peminjam') {
-        header("Location: " . BASE_URL . "?hal=dashboardpeminjam");
-        exit();
-    }
+  if ($_SESSION['role'] === 'admin') {
+    header("Location: " . BASE_URL . "?hal=dashboardadmin");
+    exit();
+  } elseif ($_SESSION['role'] === 'petugas') {
+    header("Location: " . BASE_URL . "?hal=dashboardpetugas");
+    exit();
+  } elseif ($_SESSION['role'] === 'peminjam') {
+    header("Location: " . BASE_URL . "?hal=dashboardpeminjam");
+    exit();
+  }
 }
 
 // Ambil pesan error dari redirect prosesloginuser.php
@@ -32,19 +32,20 @@ $error = $_GET['pesan'] ?? '';
 ?>
 
 <style>
-.login-wrapper {
+  .login-wrapper {
     min-height: calc(100vh - 100px);
     display: flex;
     justify-content: center;
     align-items: center;
-}
-.toggle-password {
+  }
+
+  .toggle-password {
     position: absolute;
     right: 15px;
     top: 38px;
     cursor: pointer;
     color: #777;
-}
+  }
 </style>
 
 <div class="login-wrapper">
@@ -52,8 +53,14 @@ $error = $_GET['pesan'] ?? '';
     <div class="row justify-content-center">
       <div class="col-md-5">
         <div class="card shadow-lg border-0">
+
+          <!-- HEADER BIRU -->
+          <div class="card-header bg-danger text-white text-center py-3">
+            <h3 class="m-0 fw-bold">Login User</h3>
+            <small class="text-light" style="opacity: 0.9;">(admin / petugas)</small>
+          </div>
+
           <div class="card-body p-4">
-            <h3 class="text-center mb-4">Login User (Admin/Petugas)</h3>
 
             <?php if (!empty($error)): ?>
               <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
@@ -72,23 +79,25 @@ $error = $_GET['pesan'] ?? '';
               </div>
 
               <div class="d-grid">
-                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="submit" class="btn btn-danger">Login</button>
               </div>
             </form>
 
             <div class="text-center mt-3">
               <a href="<?= BASE_URL ?>">← Kembali ke Beranda</a>
             </div>
+
           </div>
         </div>
+
       </div>
     </div>
   </div>
 </div>
 
 <script>
-function togglePassword() {
-  const pass = document.getElementById('password');
-  pass.type = pass.type === 'password' ? 'text' : 'password';
-}
+  function togglePassword() {
+    const pass = document.getElementById('password');
+    pass.type = pass.type === 'password' ? 'text' : 'password';
+  }
 </script>

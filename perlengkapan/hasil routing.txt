@@ -1,3 +1,10 @@
+http://localhost/peminjamanalatrpl/dashboard.php?hal=user/daftaruser
+http://localhost/peminjamanalatrpl/dashboard.php?hal=user/tambahuser
+http://localhost/peminjamanalatrpl/dashboard.php?hal=peminjam/daftarpeminjam
+http://localhost/peminjamanalatrpl/dashboard.php?hal=user/peminjam/tambahpeminjam
+
+
+
 CMSMAHDI/                                        ← Root utama aplikasi
 │
 ├─ pages/                                        ← Template layout untuk frontend & backend

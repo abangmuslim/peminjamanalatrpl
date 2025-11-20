@@ -3,13 +3,13 @@ require_once __DIR__ . '/../../../includes/path.php';
 require_once INCLUDES_PATH . 'koneksi.php';
 require_once INCLUDES_PATH . 'ceksession.php';
 
-// Ambil semua user beserta nama jabatan
-$sql = "SELECT u.*, j.namajabatan 
-        FROM user u 
-        LEFT JOIN jabatan j ON u.idjabatan = j.idjabatan
-        ORDER BY u.iduser DESC";
+// Ambil semua peminjam beserta asalnya
+$sql = "SELECT p.*, a.namaasal 
+        FROM peminjam p 
+        LEFT JOIN asal a ON p.idasal = a.idasal
+        ORDER BY p.idpeminjam DESC";
 $result = mysqli_query($koneksi, $sql);
-$users = mysqli_fetch_all($result, MYSQLI_ASSOC);
+$peminjams = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
 include PAGES_PATH . 'user/header.php';
 include PAGES_PATH . 'user/navbar.php';
@@ -18,13 +18,14 @@ include PAGES_PATH . 'user/sidebar.php';
 
 <div class="content">
   <section class="content-header">
-    <h1>Daftar User</h1>
+    <h1>Daftar Peminjam</h1>
   </section>
 
   <section class="content">
+
     <div class="row mb-3">
         <div class="col-md-6">
-            <a href="<?= BASE_URL ?>dashboard.php?hal=user/tambahuser" class="btn btn-primary">+ Tambah User</a>
+            <a href="<?= BASE_URL ?>dashboard.php?hal=peminjam/tambahpeminjam" class="btn btn-primary">+ Tambah Peminjam</a>
         </div>
     </div>
 
@@ -36,44 +37,46 @@ include PAGES_PATH . 'user/sidebar.php';
                         <th>No</th>
                         <th>Nama</th>
                         <th>Username</th>
-                        <th>Email</th>
-                        <th>Jabatan</th>
-                        <th>Role</th>
+                        <th>Asal</th>
                         <th>Foto</th>
                         <th>Tanggal Buat</th>
-                        <th class="text-center">Aksi</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($users as $i => $u): ?>
+                <?php foreach ($peminjams as $i => $p): ?>
                     <tr>
                         <td><?= $i+1 ?></td>
-                        <td><?= htmlspecialchars($u['namauser']) ?></td>
-                        <td><?= htmlspecialchars($u['username']) ?></td>
-                        <td><?= htmlspecialchars($u['email'] ?? '-') ?></td>
-                        <td><?= htmlspecialchars($u['namajabatan'] ?? '-') ?></td>
-                        <td><?= htmlspecialchars($u['role']) ?></td>
+                        <td><?= htmlspecialchars($p['namapeminjam']) ?></td>
+                        <td><?= htmlspecialchars($p['username']) ?></td>
+                        <td><?= htmlspecialchars($p['namaasal'] ?? '-') ?></td>
                         <td class="text-center">
-                            <?php if (!empty($u['foto'])): ?>
-                                <img src="<?= BASE_URL ?>uploads/user/<?= $u['foto'] ?>" width="50" class="img-thumbnail">
+                            <?php if (!empty($p['foto'])): ?>
+                                <img src="<?= BASE_URL ?>uploads/peminjam/<?= $p['foto'] ?>" width="50" class="img-thumbnail">
                             <?php else: ?>
                                 <span class="text-muted">No foto</span>
                             <?php endif; ?>
                         </td>
-                        <td><?= date('d M Y H:i', strtotime($u['tanggalbuat'] ?? '')) ?></td>
+                        <td><?= date('d M Y H:i', strtotime($p['tanggalbuat'] ?? '')) ?></td>
+                        <td>
+                            <span class="badge <?= $p['status'] == 'pending' ? 'bg-warning' : ($p['status'] == 'disetujui' ? 'bg-success' : 'bg-danger') ?>">
+                                <?= ucfirst($p['status'] ?? '-') ?>
+                            </span>
+                        </td>
                         <td class="text-center">
                             <!-- Lihat detail -->
-                            <a href="<?= BASE_URL ?>dashboard.php?hal=user/tampiluser&id=<?= $u['iduser'] ?>" class="btn btn-info btn-sm">
+                            <a href="<?= BASE_URL ?>dashboard.php?hal=peminjam/tampilpeminjam&id=<?= $p['idpeminjam'] ?>" class="btn btn-info btn-sm">
                                 <i class="fas fa-eye"></i>
                             </a>
 
                             <!-- Edit -->
-                            <a href="<?= BASE_URL ?>dashboard.php?hal=user/edituser&id=<?= $u['iduser'] ?>" class="btn btn-warning btn-sm">
+                            <a href="<?= BASE_URL ?>dashboard.php?hal=peminjam/editpeminjam&id=<?= $p['idpeminjam'] ?>" class="btn btn-warning btn-sm">
                                 <i class="fas fa-edit"></i>
                             </a>
 
                             <!-- Hapus -->
-                            <form action="<?= BASE_URL ?>views/user/user/prosesuser.php?aksi=hapus&id=<?= $u['iduser'] ?>" method="POST" class="d-inline" onsubmit="return confirm('Yakin hapus user ini?')">
+                            <form action="<?= BASE_URL ?>views/user/peminjam/prosespeminjam.php?aksi=hapus&id=<?= $p['idpeminjam'] ?>" method="POST" class="d-inline" onsubmit="return confirm('Yakin hapus peminjam ini?')">
                                 <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
                             </form>
                         </td>
@@ -83,6 +86,7 @@ include PAGES_PATH . 'user/sidebar.php';
             </table>
         </div>
     </div>
+
   </section>
 </div>
 

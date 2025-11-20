@@ -1,85 +1,67 @@
 <?php
-include "koneksi.php";
-$id = $_GET['idpeminjam'];
-$sql = mysqli_query($koneksi, "SELECT * FROM peminjam WHERE idpeminjam='$id'");
-$data = mysqli_fetch_array($sql);
+require_once __DIR__ . '/../../../includes/path.php';
+require_once INCLUDES_PATH . 'koneksi.php';
+require_once INCLUDES_PATH . 'ceksession.php';
+
+$id = $_GET['id'] ?? 0;
+$peminjam = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM peminjam WHERE idpeminjam=$id"));
+$asal = mysqli_query($koneksi, "SELECT * FROM asal ORDER BY namaasal ASC");
 ?>
 
-<!-- Main content -->
-<section class="content">
+<?php include PAGES_PATH . 'user/header.php'; ?>
+<?php include PAGES_PATH . 'user/navbar.php'; ?>
+<?php include PAGES_PATH . 'user/sidebar.php'; ?>
 
-  <!-- Default box -->
-  <div class="card">
-    <div class="card-header bg-gradient-primary mb-3">
-      <div class="row">
-        <div class="col tekstebal">
-          <strong>
-            <h5 style="font-family:Arial, Helvetica, sans-serif;">Edit Peminjam</h5>
-          </strong>
-        </div>
-        <div class="col">
-          <a href="index.php?halaman=tampilpeminjam" class="btn btn-light float-right btn-sm"><i class="fas fa-arrow-left"></i> Kembali</a>
-        </div>
-      </div>
-    </div>
+<div class="content">
+    <section class="content-header"><h1>Edit Peminjam</h1></section>
+    <section class="content">
 
-    <div class="card-body">
-      <div class="card text-xs">
-        <form action="db/dbpeminjam.php?proses=edit" method="POST" enctype="multipart/form-data">
-          <input type="hidden" value="<?= $data['idpeminjam'] ?>" name="idpeminjam" id="idpeminjam">
+        <form method="POST" action="<?= BASE_URL ?>views/user/peminjam/prosespeminjam.php" enctype="multipart/form-data">
+            <input type="hidden" name="aksi" value="edit">
+            <input type="hidden" name="idpeminjam" value="<?= $peminjam['idpeminjam'] ?>">
+            <input type="hidden" name="fotolama" value="<?= $peminjam['foto'] ?>">
 
-          <div class="card-body-sm ml-2">
             <div class="form-group">
-              <label for="namapeminjam">Nama Peminjam</label>
-              <input type="text" class="form-control" id="namapeminjam" name="namapeminjam" value="<?= $data['namapeminjam'] ?>" required>
+                <label>Nama Peminjam</label>
+                <input type="text" name="namapeminjam" class="form-control" value="<?= htmlspecialchars($peminjam['namapeminjam']) ?>" required>
             </div>
 
             <div class="form-group">
-              <label for="username">Username</label>
-              <input type="text" class="form-control" id="username" name="username" value="<?= $data['username'] ?>" required>
+                <label>Asal</label>
+                <select name="idasal" class="form-control" required>
+                    <option value="">-- Pilih Asal --</option>
+                    <?php while ($a = mysqli_fetch_assoc($asal)): ?>
+                        <option value="<?= $a['idasal'] ?>" <?= $a['idasal']==$peminjam['idasal']?'selected':'' ?>>
+                            <?= htmlspecialchars($a['namaasal']) ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
             </div>
 
             <div class="form-group">
-              <label for="password">Password</label>
-              <input type="password" class="form-control" id="password" name="password" placeholder="Kosongkan jika tidak ingin diganti">
+                <label>Username</label>
+                <input type="text" name="username" class="form-control" value="<?= htmlspecialchars($peminjam['username']) ?>" required>
             </div>
 
             <div class="form-group">
-              <label>Select Asal</label>
-              <select class="form-control" name="idasal">
-                <option value="" disabled>-- Pilih Asal --</option>
-                <?php
-                $sqlasal = mysqli_query($koneksi, "SELECT * FROM asal ORDER BY namaasal ASC");
-                while ($dataasal = mysqli_fetch_array($sqlasal)) {
-                    $selected = ($data['idasal'] == $dataasal['idasal']) ? "selected" : "";
-                    echo "<option value='{$dataasal['idasal']}' $selected>{$dataasal['namaasal']}</option>";
-                }
-                ?>
-              </select>
+                <label>Password <small>(kosongkan jika tidak diubah)</small></label>
+                <input type="password" name="password" class="form-control">
             </div>
 
             <div class="form-group">
-              <label for="foto">Upload Foto Peminjam</label>
-              <input type="file" name="foto" id="foto" class="form-control" accept="image/*">
+                <label>Foto</label>
+                <?php if ($peminjam['foto']): ?>
+                    <div class="mb-2">
+                        <img src="<?= BASE_URL ?>uploads/peminjam/<?= $peminjam['foto'] ?>" width="80">
+                    </div>
+                <?php endif; ?>
+                <input type="file" name="foto" class="form-control">
             </div>
-          </div>
 
-          <div class="card-footer float-right">
-            <?php if(!empty($data['foto'])) { ?>
-              <div class="col-sm-12">
-                <img src="foto/<?= $data['foto']; ?>" width="100px" class="rounded float-right mb-2">
-              </div>
-            <?php } ?>
-            <button type="reset" class="btn-sm btn-warning"><i class="fa fa-retweet"></i> Reset</button>
-            <button type="submit" class="btn-sm btn-primary"><i class="fa fa-save"></i> Submit</button>
-          </div>
+            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
         </form>
-      </div>
-    </div>
 
-    <div class="card-footer">
-      Footer
-    </div>
-  </div>
+    </section>
+</div>
 
-</section>
+<?php include PAGES_PATH . 'user/footer.php'; ?>

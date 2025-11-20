@@ -77,6 +77,14 @@ switch ($halaman) {
         $file_view = VIEWS_PATH . 'otentikasipeminjam/loginpeminjam.php';
         break;
 
+    case 'registerpeminjam':
+        $file_view = VIEWS_PATH . 'otentikasipeminjam/registerpeminjam.php';
+        break;
+
+    case 'prosesregisterpeminjam':
+        $file_view = VIEWS_PATH . 'otentikasipeminjam/prosesregisterpeminjam.php';
+        break;
+
     case 'prosesloginpeminjam':
         $file_view = VIEWS_PATH . 'otentikasipeminjam/prosesloginpeminjam.php';
         break;
@@ -84,6 +92,7 @@ switch ($halaman) {
     case 'logoutpeminjam':
         $file_view = VIEWS_PATH . 'otentikasipeminjam/logoutpeminjam.php';
         break;
+
 
 
     // ====================================================
