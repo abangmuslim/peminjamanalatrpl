@@ -1,6 +1,6 @@
 <?php
 // =======================================
-// File: dashboard.php - Pusat Routing Backend PEMINJAMANALATRPL
+// File: dashboard.php - Routing Backend PEMINJAMANALATRPL
 // =======================================
 
 require_once __DIR__ . '/includes/path.php';
@@ -11,60 +11,67 @@ require_once INCLUDES_PATH . 'fungsivalidasi.php';
 session_start();
 
 // =======================================
-// 1️⃣ Tentukan Role & Layout
+// 1️⃣ Tentukan Role & View Folder Dasar
 // =======================================
 $role = $_SESSION['role'] ?? '';
-$layoutPath = 'pages/user';
-$viewFolder = 'views/user';
-$defaultPage = 'dashboardadmin';
 
-// === (PATCH) Tambahan role PETUGAS ===
-if ($role === 'petugas') {
-    $layoutPath = 'pages/user';
-    $viewFolder = 'views/user';
-    $defaultPage = 'dashboardpetugas';
-}
+switch ($role) {
+    case 'petugas':
+        $viewFolder = 'views/user';
+        $defaultPage = 'dashboardpetugas';
+        break;
 
-// === Role PEMINJAM tetap seperti semula ===
-if ($role === 'peminjam') {
-    $layoutPath = 'pages/peminjam';
-    $viewFolder = 'views/peminjam';
-    $defaultPage = 'dashboardpeminjam';
+    case 'peminjam':
+        $viewFolder = 'views/peminjam';
+        $defaultPage = 'dashboardpeminjam';
+        break;
+
+    default: // admin, user, atau lainnya
+        $viewFolder = 'views/user';
+        $defaultPage = 'dashboardadmin';
+        break;
 }
 
 // =======================================
-// 2️⃣ Halaman yang Diminta
+// 2️⃣ Halaman yang diminta
 // =======================================
 $hal = $_GET['hal'] ?? $defaultPage;
-
-// =======================================
-// 3️⃣ Bangun Path File View
-// =======================================
 $halPath = explode('/', $hal);
 
+// =======================================
+// 3️⃣ Build Path sesuai struktur folder Anda
+// =======================================
 if (count($halPath) > 1) {
-    $file = BASE_PATH . "/{$viewFolder}/" . implode('/', $halPath) . ".php";
+    // contoh: ?hal=user/daftaruser
+    $module = $halPath[0];   // folder di dalam views/user/
+    $page   = $halPath[1];   // file di dalam folder modul
+    $file = BASE_PATH . "/{$viewFolder}/{$module}/{$page}.php";
+
 } else {
+    // contoh: ?hal=dashboardadmin
     $file = BASE_PATH . "/{$viewFolder}/{$hal}.php";
 }
 
 // =======================================
-// 4️⃣ Fallback Otomatis jika File Tidak Ada
+// 4️⃣ Fallback jika file tidak ditemukan
 // =======================================
 if (!file_exists($file)) {
 
-    // Admin & Petugas (role user panel)
-    if ($role === 'admin' || $role === 'user' || $role === 'petugas') {
+    // fallback modul (hanya role admin, user, petugas)
+    if (in_array($role, ['admin','user','petugas'])) {
+
         $fallbacks = [
-            'user'     => 'user/daftaruser',
-            'jabatan'  => 'jabatan/daftarjabatan',
-            'kategori' => 'kategori/daftarkategori',
-            'merk'     => 'merk/daftarmerk',
-            'alat'     => 'alat/daftaralat',
-            'peminjam' => 'peminjam/daftarpeminjam',
-            'peminjaman'=> 'peminjaman/daftarpeminjaman',
-            'pengembalian'=> 'pengembalian/daftarpengembalian',
-            'laporan'  => 'laporan/daftarlaporan'
+            'user'         => 'user/daftaruser',
+            'jabatan'      => 'jabatan/daftarjabatan',
+            'kategori'     => 'kategori/daftarkategori',
+            'merk'         => 'merk/daftarmerk',
+            'alat'         => 'alat/daftaralat',
+            'peminjam'     => 'peminjam/daftarpeminjam',
+            'peminjaman'   => 'peminjaman/daftarpeminjaman',
+            'pengembalian' => 'pengembalian/daftarpengembalian',
+            'komentar'     => 'komentar/daftarkomentar',
+            'asal'         => 'asal/daftarasal',
+            'laporan'      => 'laporan/daftarlaporan'
         ];
 
         $parent = $halPath[0] ?? '';
@@ -74,19 +81,21 @@ if (!file_exists($file)) {
         } else {
             $file = BASE_PATH . "/{$viewFolder}/{$defaultPage}.php";
         }
+    }
 
-    } elseif ($role === 'peminjam') {
-        // Default peminjam
+    // fallback peminjam
+    elseif ($role === 'peminjam') {
         $file = BASE_PATH . "/{$viewFolder}/{$defaultPage}.php";
+    }
 
-    } else {
-        // Belum login → redirect login peminjam
+    // belum login → wajib login peminjam
+    else {
         header("Location: " . BASE_URL . "?hal=otentikasipeminjam/loginpeminjam");
         exit;
     }
 }
 
 // =======================================
-// 5️⃣ Include Layout (UNCHANGED)
+// 5️⃣ Load View
 // =======================================
 include $file;

@@ -53,7 +53,7 @@ include PAGES_PATH . 'user/sidebar.php';  // ⬅ sidebar admin
 ?>
 
 <!-- MULAI WRAPPER KONTEN (harus setelah sidebar) -->
-<div class="content-wrapper p-3">
+<div class="content p-3">
   <section class="content">
     <div class="container-fluid">
 
