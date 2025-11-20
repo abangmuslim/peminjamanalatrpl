@@ -1,3 +1,126 @@
++---------------------------------------------------+
+|                       user                        |
++---------------------------------------------------+
+| iduser (PK)                                       |
+| idjabatan (FK → jabatan.idjabatan)                |
+| namauser                                          |
+| username (UNIQUE)                                 |
+| email                                             |
+| password                                          |
+| foto                                              |
+| tanggalbuat                                       |
+| role (enum: admin, petugas)                       |
++---------------------------------------------------+
+
+
++---------------------------+
+|          jabatan          |
++---------------------------+
+| idjabatan (PK)            |
+| namajabatan               |
++---------------------------+
+
+
++----------------------------------------------------+
+|                     peminjam                        |
++----------------------------------------------------+
+| idpeminjam (PK)                                     |
+| idasal (FK → asal.idasal)                           |
+| namapeminjam                                        |
+| username (UNIQUE)                                   |
+| password                                            |
+| foto                                                |
++----------------------------------------------------+
+
+
++---------------------------+
+|           asal            |
++---------------------------+
+| idasal (PK)               |
+| namaasal                  |
++---------------------------+
+
+
++---------------------------+
+|         kategori          |
++---------------------------+
+| idkategori (PK)           |
+| namakategori              |
++---------------------------+
+
+
++---------------------------+
+|           merk            |
++---------------------------+
+| idmerk (PK)               |
+| namamerk                  |
++---------------------------+
+
+
++---------------------------+
+|          posisi           |
++---------------------------+
+| idposisi (PK)             |
+| namaposisi                |
++---------------------------+
+
+
++-------------------------------------------------------------+
+|                            alat                             |
++-------------------------------------------------------------+
+| idalat (PK)                                                 |
+| idkategori (FK → kategori.idkategori)                       |
+| idmerk (FK → merk.idmerk)                                   |
+| namaalat                                                    |
+| kondisi                                                     |
+| idposisi (FK → posisi.idposisi)                             |
+| tanggalpembelian                                            |
+| foto                                                        |
+| deskripsi                                                   |
++-------------------------------------------------------------+
+
+
++----------------------------------------------------------+
+|                        peminjaman                        |
++----------------------------------------------------------+
+| idpeminjaman (PK)                                        |
+| idadmin (FK → user.iduser)                               |
+| idpeminjam (FK → peminjam.idpeminjam)                    |
+| foto                                                     |
++----------------------------------------------------------+
+
+
++-----------------------------------------------------------------------+
+|                          detilpeminjaman                              |
++-----------------------------------------------------------------------+
+| iddetilpeminjaman (PK)                                                |
+| idpeminjaman (FK → peminjaman.idpeminjaman)                           |
+| idalat (FK → alat.idalat)                                             |
+| tanggalpinjam                                                         |
+| tanggalkembali                                                        |
+| tanggaldikembalikan                                                   |
+| durasipeminjaman                                                      |
+| jumlahharitelat                                                       |
+| status (enum: terlambat, tidakterlambat)                              |
+| keterangan (enum: sudahkembali, belumkembali)                         |
+| denda                                                                 |
++-----------------------------------------------------------------------+
+
+
++--------------------------------------------------------------------+
+|                             komentar                               |
++--------------------------------------------------------------------+
+| idkomentar (PK)                                                    |
+| idalat (FK → alat.idalat)                                          |
+| idparent (FK → komentar.idkomentar)                                |
+| namakomentar                                                       |
+| email                                                              |
+| isikomentar                                                        |
+| tanggalbuat                                                        |
+| status (enum: tampil, sembunyi)                                    |
++--------------------------------------------------------------------+
+
+
 -- DROP DB dulu jika ingin rebuild (opsional)
 DROP DATABASE IF EXISTS peminjamanalatrpl;
 CREATE DATABASE peminjamanalatrpl CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
@@ -223,116 +346,3 @@ INSERT INTO komentar (idalat, idparent, namakomentar, email, isikomentar) VALUES
 (10,NULL,'Nina','nina@example.com','Palu mantap');
 
 
-
-
-+---------------------------------------------------+
-|                       user                        |
-+---------------------------------------------------+
-| iduser (PK)                                       |
-| idjabatan (FK → jabatan.idjabatan)               |
-| namauser                                          |
-| username (UNIQUE)                                 |
-| email                                             |
-| password                                          |
-| foto                                              |
-| tanggalbuat                                       |
-| role (enum: admin, petugas)                       |
-+---------------------------------------------------+
-
-+---------------------------+
-|          jabatan          |
-+---------------------------+
-| idjabatan (PK)           |
-| namajabatan              |
-+---------------------------+
-
-+----------------------------------------------------+
-|                     peminjam                       |
-+----------------------------------------------------+
-| idpeminjam (PK)                                    |
-| idasal (FK → asal.idasal)                          |
-| namapeminjam                                       |
-| username (UNIQUE)                                  |
-| password                                           |
-| foto                                               |
-+----------------------------------------------------+
-
-+---------------------------+
-|           asal            |
-+---------------------------+
-| idasal (PK)               |
-| namaasal                  |
-+---------------------------+
-
-+---------------------------+
-|         kategori          |
-+---------------------------+
-| idkategori (PK)           |
-| namakategori              |
-+---------------------------+
-
-+---------------------------+
-|           merk            |
-+---------------------------+
-| idmerk (PK)               |
-| namamerk                  |
-+---------------------------+
-
-+---------------------------+
-|          posisi           |
-+---------------------------+
-| idposisi (PK)             |
-| namaposisi                |
-+---------------------------+
-
-+-------------------------------------------------------------+
-|                            alat                             |
-+-------------------------------------------------------------+
-| idalat (PK)                                                 |
-| idkategori (FK → kategori.idkategori)                       |
-| idmerk (FK → merk.idmerk)                                   |
-| namaalat                                                    |
-| kondisi                                                     |
-| idposisi (FK → posisi.idposisi)                             |
-| tanggalpembelian                                            |
-| foto                                                        |
-| deskripsi                                                   |
-+-------------------------------------------------------------+
-
-+----------------------------------------------------------+
-|                        peminjaman                        |
-+----------------------------------------------------------+
-| idpeminjaman (PK)                                        |
-| idadmin (FK → user.iduser)                               |
-| idpeminjam (FK → peminjam.idpeminjam)                    |
-| foto                                                     |
-+----------------------------------------------------------+
-
-+-----------------------------------------------------------------------+
-|                          detilpeminjaman                              |
-+-----------------------------------------------------------------------+
-| iddetilpeminjaman (PK)                                                |
-| idpeminjaman (FK → peminjaman.idpeminjaman)                           |
-| idalat (FK → alat.idalat)                                             |
-| tanggalpinjam                                                         |
-| tanggalkembali                                                        |
-| tanggaldikembalikan                                                   |
-| durasipeminjaman                                                      |
-| jumlahharitelat                                                       |
-| status (enum: terlambat, tidakterlambat)                              |
-| keterangan (enum: sudahkembali, belumkembali)                         |
-| denda                                                                 |
-+-----------------------------------------------------------------------+
-
-+--------------------------------------------------------------------+
-|                             komentar                               |
-+--------------------------------------------------------------------+
-| idkomentar (PK)                                                    |
-| idalat (FK → alat.idalat)                                          |
-| idparent (FK → komentar.idkomentar)                                |
-| namakomentar                                                       |
-| email                                                              |
-| isikomentar                                                        |
-| tanggalbuat                                                        |
-| status (enum: tampil, sembunyi)                                    |
-+--------------------------------------------------------------------+
