@@ -5,7 +5,8 @@ PEMINJAMANALATRPL/
 │  ├─ user/                     ← layout untuk role admin (back office)
 │  │  ├─ header.php             ← head, link CSS, judul halaman
 │  │  ├─ navbar.php             ← navigasi atas admin
-│  │  ├─ sidebar.php            ← sidebar menu admin (kelola user, kategori, alat, komentar)
+│  │  ├─ sidebar.php            ← sidebar menu admin (kelola dashboard asal, jabatan, user, peminjam, merk, posisi,kategori, alat, komentar, peminjaman, pengembalian, laporan)
+│  │  ├─ sidebarpetugas.php     ← sidebarpetugas menu petugas (sama seperti admin, kecuali USER)
 │  │  └─ footer.php             ← script JS dan footer dashboard
 │  │
 │  ├─ peminjam/                 ← layout untuk role peminjam (back office)
@@ -113,7 +114,7 @@ PEMINJAMANALATRPL/
 │  │  │  └─ cetaklaporan.php
 │  │  │
 │  │  ├─ dashboardadmin.php     ← dashboard utama untuk admin
-│  │  └─ dashboardpetugas.php    ← dashboard utama untuk peminjam
+│  │  └─ dashboardpetugas.php    ← dashboard utama untuk peminjam tidak boleh ada kolola user
 │  │
 │  ├─ peminjam/                 ← alat dashboard untuk user login (extend dari pages/user atau pages/peminjam)
 │  │  ├─ dashboardpeminjam.php              

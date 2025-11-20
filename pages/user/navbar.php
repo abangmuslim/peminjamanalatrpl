@@ -1,7 +1,7 @@
 <?php
 // ==============================================
-// File: pages/user/navbar.php
-// Deskripsi: Navbar + Breadcrumb otomatis + Logout
+// File: pages/user/navbar.php (FINAL FIX)
+// Deskripsi: Navbar + Breadcrumb + Logout + Layout FIX
 // ==============================================
 
 $namauser = $_SESSION['namauser'] ?? $_SESSION['namalengkap'] ?? 'Pengguna';
@@ -11,9 +11,10 @@ $foto     = $_SESSION['foto'] ?? 'default.png';
 // Logout URL berdasarkan role
 $logout_url = BASE_URL . '?hal=' . ($role === 'peminjam' ? 'logoutpeminjam' : 'logoutuser');
 
+
 /**
  * =====================================================
- * Fungsi otomatis membentuk breadcrumb
+ * Fungsi Breadcrumb Otomatis
  * =====================================================
  */
 if (!function_exists('buat_breadcrumb_otomatis')) {
@@ -21,7 +22,6 @@ if (!function_exists('buat_breadcrumb_otomatis')) {
     {
         $hal = $_GET['hal'] ?? 'dashboardadmin';
 
-        // Dashboard utama
         if (in_array($hal, ['dashboardadmin','dashboardpetugas','dashboardpeminjam'])) {
             echo '<ol class="breadcrumb float-sm-right"><li class="breadcrumb-item active">Dashboard</li></ol>';
             return;
@@ -30,10 +30,8 @@ if (!function_exists('buat_breadcrumb_otomatis')) {
         $parts = explode('/', $hal);
         $breadcrumb = [];
 
-        // Tambahkan Dashboard sebagai awal
-        $breadcrumb[] = '<li class="breadcrumb-item"><a href="' . BASE_URL . '?hal=dashboardadmin">Dashboard</a></li>';
+        $breadcrumb[] = '<li class="breadcrumb-item"><a href="?hal=dashboardadmin">Dashboard</a></li>';
 
-        // Fallback menu otomatis
         $fallbacks = [
             'user'         => 'user/daftaruser',
             'jabatan'      => 'jabatan/daftarjabatan',
@@ -52,14 +50,7 @@ if (!function_exists('buat_breadcrumb_otomatis')) {
             $segment = htmlspecialchars(ucfirst(str_replace(['_', '-'], ' ', $parts[$i])));
             if ($i < count($parts) - 1) {
                 $parent = $parts[$i];
-                $suburl = BASE_URL . '?hal=';
-
-                if (isset($fallbacks[$parent])) {
-                    $suburl .= $fallbacks[$parent];
-                } else {
-                    $suburl .= implode('/', array_slice($parts, 0, $i + 1));
-                }
-
+                $suburl = '?hal=' . ($fallbacks[$parent] ?? implode('/', array_slice($parts, 0, $i + 1)));
                 $breadcrumb[] = '<li class="breadcrumb-item"><a href="' . $suburl . '">' . $segment . '</a></li>';
             } else {
                 $breadcrumb[] = '<li class="breadcrumb-item active">' . $segment . '</li>';
@@ -70,9 +61,10 @@ if (!function_exists('buat_breadcrumb_otomatis')) {
     }
 }
 
+
 /**
  * =====================================================
- * Fungsi otomatis membuat judul halaman
+ * Judul Halaman Otomatis
  * =====================================================
  */
 if (!function_exists('judul_halaman_otomatis')) {
@@ -89,11 +81,11 @@ if (!function_exists('judul_halaman_otomatis')) {
 ?>
 
 <!-- ============================================== -->
-<!-- NAVBAR ATAS DASHBOARD -->
+<!-- NAVBAR ATAS -->
 <!-- ============================================== -->
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
 
-  <!-- Kiri: toggle & home -->
+  <!-- Menu kiri -->
   <ul class="navbar-nav">
     <li class="nav-item">
       <a class="nav-link" data-widget="pushmenu" href="#" role="button">
@@ -105,7 +97,7 @@ if (!function_exists('judul_halaman_otomatis')) {
     </li>
   </ul>
 
-  <!-- Kanan: user menu -->
+  <!-- Menu kanan -->
   <ul class="navbar-nav ml-auto">
     <li class="nav-item dropdown user-menu">
       <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
@@ -123,11 +115,13 @@ if (!function_exists('judul_halaman_otomatis')) {
 </nav>
 
 <!-- ============================================== -->
-<!-- HEADER + BREADCRUMB OTOMATIS -->
+<!-- CONTENT WRAPPER FIX -->
 <!-- ============================================== -->
-<div class="content-header">
-  <div class="container-fluid d-flex justify-content-between align-items-center">
-    <h5 class="m-0"><?= judul_halaman_otomatis(); ?></h5>
-    <?php buat_breadcrumb_otomatis(); ?>
+<div class="content-wrapper">
+
+  <div class="content-header">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      <h5 class="m-0"><?= judul_halaman_otomatis(); ?></h5>
+      <?php buat_breadcrumb_otomatis(); ?>
+    </div>
   </div>
-</div>

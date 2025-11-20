@@ -1,16 +1,15 @@
 <?php
 // =======================================
-// File: views/user/dashboardadmin.php
-// Deskripsi: Dashboard Admin PeminjamanAlatRPL (fix layout seperti dashboardpetugas)
+// File: views/user/dashboardpetugas.php
+// Dashboard Petugas PeminjamanAlatRPL
 // =======================================
 
 // Statistik ringkas
 $totalAlat      = mysqli_fetch_assoc(mysqli_query($koneksi,"SELECT COUNT(*) AS jumlah FROM alat"))['jumlah'];
 $totalPinjam    = mysqli_fetch_assoc(mysqli_query($koneksi,"SELECT COUNT(*) AS jumlah FROM peminjaman"))['jumlah'];
-$totalUser      = mysqli_fetch_assoc(mysqli_query($koneksi,"SELECT COUNT(*) AS jumlah FROM user"))['jumlah'];
 $totalKategori  = mysqli_fetch_assoc(mysqli_query($koneksi,"SELECT COUNT(*) AS jumlah FROM kategori"))['jumlah'];
 
-// Grafik: Peminjaman per kategori
+// Grafik kategori
 $hasilKategori = mysqli_query($koneksi, "
     SELECT k.namakategori, COUNT(dp.idpeminjaman) AS jumlah
     FROM kategori k
@@ -36,24 +35,14 @@ $peminjamanTerbaru = mysqli_query($koneksi, "
     LIMIT 5
 ");
 
-// User terbaru
-$userTerbaru = mysqli_query($koneksi, "
-    SELECT iduser, namauser, username, email
-    FROM user
-    ORDER BY iduser DESC
-    LIMIT 5
-");
-
-// ===============================
-// Include layout (SAMA PERSIS dengan dashboardpetugas)
-// ===============================
+// Include layout
 include PAGES_PATH . 'user/header.php';
 include PAGES_PATH . 'user/navbar.php';
-include PAGES_PATH . 'user/sidebar.php';  // ⬅ sidebar admin
+include PAGES_PATH . 'user/sidebarpetugas.php';
 ?>
 
-<!-- MULAI WRAPPER KONTEN (harus setelah sidebar) -->
-<div class="content-wrapper p-3">
+<!-- FIX: hilangkan content-wrapper kedua -->
+<div class="content p-3">
   <section class="content">
     <div class="container-fluid">
 
@@ -63,11 +52,10 @@ include PAGES_PATH . 'user/sidebar.php';  // ⬅ sidebar admin
         $statistik = [
             ['warna'=>'info','jumlah'=>$totalAlat,'label'=>'Total Alat','ikon'=>'tools','link'=>'alat/daftaralat'],
             ['warna'=>'success','jumlah'=>$totalPinjam,'label'=>'Total Peminjaman','ikon'=>'handshake','link'=>'peminjaman/daftarpeminjaman'],
-            ['warna'=>'warning','jumlah'=>$totalUser,'label'=>'User Terdaftar','ikon'=>'users','link'=>'user/daftaruser'],
             ['warna'=>'danger','jumlah'=>$totalKategori,'label'=>'Kategori Alat','ikon'=>'folder','link'=>'kategori/daftarkategori'],
         ];
         foreach($statistik as $item){ ?>
-          <div class="col-xl-3 col-md-6 col-sm-12 mb-3">
+          <div class="col-xl-4 col-md-6 col-sm-12 mb-3">
             <div class="small-box bg-<?= $item['warna'] ?> text-white p-3 shadow-sm">
               <div class="inner">
                 <h3><?= $item['jumlah'] ?></h3>
@@ -82,10 +70,8 @@ include PAGES_PATH . 'user/sidebar.php';  // ⬅ sidebar admin
         <?php } ?>
       </div>
 
-      <!-- Grafik dan Tabel -->
+      <!-- Grafik & Tabel -->
       <div class="row">
-
-        <!-- Grafik -->
         <div class="col-lg-6 col-12 mb-3">
           <div class="card shadow-sm">
             <div class="card-header bg-primary text-white"><h6 class="m-0">Peminjaman per Kategori</h6></div>
@@ -93,7 +79,6 @@ include PAGES_PATH . 'user/sidebar.php';  // ⬅ sidebar admin
           </div>
         </div>
 
-        <!-- Tabel Terbaru -->
         <div class="col-lg-6 col-12">
           <div class="card shadow-sm mb-3">
             <div class="card-header bg-success text-white"><h6 class="m-0">Peminjaman Terbaru</h6></div>
@@ -112,26 +97,8 @@ include PAGES_PATH . 'user/sidebar.php';  // ⬅ sidebar admin
               </table>
             </div>
           </div>
-
-          <div class="card shadow-sm">
-            <div class="card-header bg-warning text-white"><h6 class="m-0">User Terbaru</h6></div>
-            <div class="card-body p-2">
-              <table class="table table-sm table-striped mb-0">
-                <thead><tr><th>Nama</th><th>Username</th><th>Email</th></tr></thead>
-                <tbody>
-                <?php while($user=mysqli_fetch_assoc($userTerbaru)){ ?>
-                  <tr>
-                    <td><?= htmlspecialchars($user['namauser']) ?></td>
-                    <td><?= htmlspecialchars($user['username']) ?></td>
-                    <td><?= htmlspecialchars($user['email']) ?></td>
-                  </tr>
-                <?php } ?>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
         </div>
+
       </div>
 
     </div>
@@ -142,14 +109,14 @@ include PAGES_PATH . 'user/sidebar.php';  // ⬅ sidebar admin
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const ctx = document.getElementById('grafikKategori').getContext('2d');
+const ctx=document.getElementById('grafikKategori').getContext('2d');
 new Chart(ctx,{
   type:'bar',
   data:{
-    labels: <?= json_encode($labelKategori) ?>,
+    labels:<?= json_encode($labelKategori) ?>,
     datasets:[{
       label:'Jumlah Peminjaman',
-      data: <?= json_encode($jumlahPeminjaman) ?>,
+      data:<?= json_encode($jumlahPeminjaman) ?>,
       backgroundColor:'rgba(54,162,235,0.6)',
       borderColor:'rgba(54,162,235,1)',
       borderWidth:1

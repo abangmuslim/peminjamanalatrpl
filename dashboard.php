@@ -18,6 +18,14 @@ $layoutPath = 'pages/user';
 $viewFolder = 'views/user';
 $defaultPage = 'dashboardadmin';
 
+// === (PATCH) Tambahan role PETUGAS ===
+if ($role === 'petugas') {
+    $layoutPath = 'pages/user';
+    $viewFolder = 'views/user';
+    $defaultPage = 'dashboardpetugas';
+}
+
+// === Role PEMINJAM tetap seperti semula ===
 if ($role === 'peminjam') {
     $layoutPath = 'pages/peminjam';
     $viewFolder = 'views/peminjam';
@@ -44,7 +52,9 @@ if (count($halPath) > 1) {
 // 4️⃣ Fallback Otomatis jika File Tidak Ada
 // =======================================
 if (!file_exists($file)) {
-    if ($role === 'admin' || $role === 'user') {
+
+    // Admin & Petugas (role user panel)
+    if ($role === 'admin' || $role === 'user' || $role === 'petugas') {
         $fallbacks = [
             'user'     => 'user/daftaruser',
             'jabatan'  => 'jabatan/daftarjabatan',
@@ -58,14 +68,17 @@ if (!file_exists($file)) {
         ];
 
         $parent = $halPath[0] ?? '';
+
         if (isset($fallbacks[$parent])) {
             $file = BASE_PATH . "/{$viewFolder}/" . $fallbacks[$parent] . ".php";
         } else {
             $file = BASE_PATH . "/{$viewFolder}/{$defaultPage}.php";
         }
+
     } elseif ($role === 'peminjam') {
         // Default peminjam
         $file = BASE_PATH . "/{$viewFolder}/{$defaultPage}.php";
+
     } else {
         // Belum login → redirect login peminjam
         header("Location: " . BASE_URL . "?hal=otentikasipeminjam/loginpeminjam");
@@ -74,6 +87,6 @@ if (!file_exists($file)) {
 }
 
 // =======================================
-// 5️⃣ Include Layout
-
+// 5️⃣ Include Layout (UNCHANGED)
+// =======================================
 include $file;
