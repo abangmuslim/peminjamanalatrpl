@@ -3,14 +3,11 @@ require_once __DIR__ . '/../../../includes/path.php';
 require_once INCLUDES_PATH . 'koneksi.php';
 require_once INCLUDES_PATH . 'ceksession.php';
 
-/* ============================
-   AMBIL DATA PEMINJAMAN + PEMINJAM + DETAIL + ALAT
-=============================== */
+// Ambil semua peminjaman yang belum dikembalikan
 $sql = "SELECT pm.*, p.namapeminjam 
-        FROM peminjaman pm 
+        FROM peminjaman pm
         LEFT JOIN peminjam p ON pm.idpeminjam = p.idpeminjam
         ORDER BY pm.idpeminjaman DESC";
-
 $result = mysqli_query($koneksi, $sql);
 $peminjamans = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
@@ -20,30 +17,11 @@ include PAGES_PATH . 'user/sidebar.php';
 ?>
 
 <div class="content">
-
-<!-- Header Card -->
-<div class="card mb-3 w-100">
-    <div class="card-header" style="background-color:#1B03A3; color:white;">
-        <div class="d-flex justify-content-between align-items-center">
-
-            <!-- Judul -->
-            <h4 class="mb-0">Daftar Peminjaman</h4>
-
-            <!-- Tombol kanan -->
-            <a href="<?= BASE_URL ?>dashboard.php?hal=peminjaman/tambahpeminjaman" 
-               class="btn btn-light btn-sm">
-               <i class="fas fa-plus"></i> Tambah Peminjaman
-            </a>
-
-        </div>
-    </div>
-</div>
-
-<section class="content">
-
     <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Daftar Peminjaman yang Belum Dikembalikan</h4>
+        </div>
         <div class="card-body table-responsive">
-
             <table class="table table-bordered table-striped" id="datatable">
                 <thead>
                     <tr>
@@ -56,22 +34,22 @@ include PAGES_PATH . 'user/sidebar.php';
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
-
                 <tbody>
                     <?php foreach ($peminjamans as $i => $pm): ?>
                         <?php
-                        // Ambil detail alat untuk peminjaman ini
+                        // Ambil detail alat yang belum dikembalikan
                         $detil = $koneksi->query("
                             SELECT d.*, a.namaalat 
-                            FROM detilpeminjaman d 
+                            FROM detilpeminjaman d
                             LEFT JOIN alat a ON d.idalat = a.idalat
-                            WHERE d.idpeminjaman = " . intval($pm['idpeminjaman'])
-                        )->fetch_all(MYSQLI_ASSOC);
+                            WHERE d.idpeminjaman = " . intval($pm['idpeminjaman']) . "
+                              AND d.keterangan = 'belumkembali'
+                        ")->fetch_all(MYSQLI_ASSOC);
+                        if (!$detil) continue;
                         ?>
                         <tr>
                             <td><?= $i + 1 ?></td>
                             <td><?= htmlspecialchars($pm['namapeminjam'] ?? '-') ?></td>
-
                             <td>
                                 <ul class="mb-0">
                                     <?php foreach($detil as $d): ?>
@@ -79,7 +57,6 @@ include PAGES_PATH . 'user/sidebar.php';
                                     <?php endforeach; ?>
                                 </ul>
                             </td>
-
                             <td>
                                 <ul class="mb-0">
                                     <?php foreach($detil as $d): ?>
@@ -87,7 +64,6 @@ include PAGES_PATH . 'user/sidebar.php';
                                     <?php endforeach; ?>
                                 </ul>
                             </td>
-
                             <td>
                                 <ul class="mb-0">
                                     <?php foreach($detil as $d): ?>
@@ -95,48 +71,34 @@ include PAGES_PATH . 'user/sidebar.php';
                                     <?php endforeach; ?>
                                 </ul>
                             </td>
-
                             <td>
                                 <ul class="mb-0">
                                     <?php foreach($detil as $d): ?>
                                         <?php
-                                        $status = $d['keterangan'] ?? 'belumkembali';
-                                        $badge = ($status === 'belumkembali') ? 'bg-warning' : 'bg-success';
+                                        $badge = ($d['keterangan'] === 'belumkembali') ? 'bg-warning' : 'bg-success';
                                         ?>
-                                        <li><span class="badge <?= $badge ?>"><?= ucfirst($status) ?></span></li>
+                                        <li><span class="badge <?= $badge ?>"><?= ucfirst($d['keterangan']) ?></span></li>
                                     <?php endforeach; ?>
                                 </ul>
                             </td>
-
                             <td class="text-center">
-                                <!-- Edit -->
-                                <a href="<?= BASE_URL ?>dashboard.php?hal=peminjaman/editpeminjaman&id=<?= intval($pm['idpeminjaman']) ?>" 
-                                   class="btn btn-warning btn-sm">
-                                   <i class="fas fa-edit"></i>
+                                <a href="<?= BASE_URL ?>dashboard.php?hal=pengembalian/tambahpengembalian&idpeminjaman=<?= intval($pm['idpeminjaman']) ?>"
+                                   class="btn btn-success btn-sm">
+                                   <i class="fas fa-undo"></i> Kembalikan
                                 </a>
-
-                                <!-- Hapus -->
-                                <form action="<?= BASE_URL ?>views/user/peminjaman/prosespeminjaman.php?aksi=hapus&id=<?= intval($pm['idpeminjaman']) ?>"
-                                      method="POST" 
-                                      class="d-inline"
-                                      onsubmit="return confirm('Yakin hapus peminjaman ini?')">
-
-                                    <button type="submit" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
                             </td>
-
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
-
             </table>
-
         </div>
     </div>
-
-</section>
 </div>
+
+<script>
+$(document).ready(function () {
+    $('#datatable').DataTable();
+});
+</script>
 
 <?php include PAGES_PATH . 'user/footer.php'; ?>

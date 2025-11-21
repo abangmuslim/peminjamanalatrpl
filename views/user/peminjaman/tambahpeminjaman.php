@@ -1,160 +1,94 @@
-<div class="card card-primary card-outline">
-  <div class="card-header bg-primary text-white">
-    <h4 class="mb-0">Form Tambah Peminjaman Alat</h4>
-  </div>
+<?php
+require_once __DIR__ . '/../../../includes/path.php';
+require_once INCLUDES_PATH . 'koneksi.php';
+require_once INCLUDES_PATH . 'ceksession.php';
 
-  <form action="db/dbpeminjaman.php?proses=tambah" method="POST">
-    <div class="card-body">
-      <div class="row">
+// Ambil daftar peminjam dan alat
+$peminjamQuery = $koneksi->query("SELECT * FROM peminjam ORDER BY namapeminjam ASC");
+$alatQuery = $koneksi->query("SELECT * FROM alat ORDER BY namaalat ASC");
 
-        <!-- KOLOM KIRI: PEMINJAM -->
-        <div class="col-md-7">
-          <div class="mb-3">
-            <label class="font-weight-bold bg-warning p-1">Nama Peminjam</label>
-            <input type="text" id="cariPeminjam" class="form-control form-control-sm mb-2" placeholder="Cari Peminjam Terdaftar...">
+include PAGES_PATH . 'user/header.php';
+include PAGES_PATH . 'user/navbar.php';
+include PAGES_PATH . 'user/sidebar.php';
+?>
 
-            <table class="table table-sm table-bordered table-hover">
-              <thead class="table-light">
-                <tr>
-                  <th>Nama</th>
-                  <th>Asal</th>
-                  <th class="text-center">Pilih</th>
-                </tr>
-              </thead>
-              <tbody id="daftarPeminjam">
-                <?php
-                $qPeminjam = mysqli_query($koneksi, "
-                  SELECT p.idpeminjam, p.namapeminjam, a.namaasal 
-                  FROM peminjam p 
-                  JOIN asal a ON p.idasal = a.idasal
-                  ORDER BY p.namapeminjam ASC
-                ");
-                while ($d = mysqli_fetch_assoc($qPeminjam)) {
-                ?>
-                  <tr>
-                    <td><?= htmlspecialchars($d['namapeminjam']) ?></td>
-                    <td><?= htmlspecialchars($d['namaasal']) ?></td>
-                    <td class="text-center">
-                      <input type="radio" name="idpeminjam" value="<?= $d['idpeminjam'] ?>" required>
-                    </td>
-                  </tr>
-                <?php } ?>
-              </tbody>
-            </table>
-          </div>
+<div class="content">
+    <div class="card mb-3">
+        <div class="card-header bg-primary text-white">
+            <h4>Tambah Peminjaman</h4>
         </div>
+        <div class="card-body">
+            <form action="<?= BASE_URL ?>views/user/peminjaman/prosespeminjaman.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="aksi" value="tambah">
 
-        <!-- KOLOM KANAN: TANGGAL -->
-        <div class="col-md-5">
-          <div class="form-group">
-            <label class="bg-warning p-1">Tanggal Pinjam</label>
-            <input type="date" name="tanggalpinjam" id="tanggalPinjam" class="form-control" required>
-          </div>
+                <div class="mb-3">
+                    <label for="idpeminjam" class="form-label">Peminjam</label>
+                    <select name="idpeminjam" id="idpeminjam" class="form-control" required>
+                        <option value="">-- Pilih Peminjam --</option>
+                        <?php while($p = $peminjamQuery->fetch_assoc()): ?>
+                            <option value="<?= $p['idpeminjam'] ?>"><?= htmlspecialchars($p['namapeminjam']) ?></option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
 
-          <div class="form-group">
-            <label class="bg-warning p-1">Tanggal Pengembalian</label>
-            <input type="date" name="tanggalkembali" id="tanggalKembali" class="form-control" required>
-          </div>
+                <div class="mb-3">
+                    <label for="foto" class="form-label">Upload Dokumen / Foto (opsional)</label>
+                    <input type="file" name="foto" id="foto" class="form-control">
+                </div>
 
-          <div class="form-group">
-            <label class="bg-warning p-1">Durasi Peminjaman</label>
-            <input type="text" id="durasi" class="form-control" readonly placeholder="-- hari --">
-          </div>
+                <hr>
+                <h5>Alat yang Dipinjam</h5>
+                <div id="alat-container">
+                    <div class="row mb-2 alat-item">
+                        <div class="col-md-4">
+                            <label>Alat</label>
+                            <select name="idalat[]" class="form-control" required>
+                                <option value="">-- Pilih Alat --</option>
+                                <?php while($a = $alatQuery->fetch_assoc()): ?>
+                                    <option value="<?= $a['idalat'] ?>"><?= htmlspecialchars($a['namaalat']) ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Tanggal Pinjam</label>
+                            <input type="date" name="tanggalpinjam[]" class="form-control" value="<?= date('Y-m-d') ?>" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Tanggal Kembali</label>
+                            <input type="date" name="tanggalkembali[]" class="form-control" value="<?= date('Y-m-d', strtotime('+1 day')) ?>" required>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger remove-alat">Hapus</button>
+                        </div>
+                    </div>
+                </div>
 
-          <div class="form-group">
-            <label class="bg-warning p-1">Denda Jika Terlambat</label>
-            <input type="text" class="form-control" readonly value="Rp 1000,- / hari">
-          </div>
+                <button type="button" id="add-alat" class="btn btn-secondary mb-3">Tambah Alat</button>
+                <br>
 
-          <!-- ID ADMIN dari sesi login -->
-          <input type="hidden" name="idadmin" value="<?= $_SESSION['idadmin'] ?>">
+                <button type="submit" class="btn btn-primary">Simpan Peminjaman</button>
+            </form>
         </div>
-      </div>
-
-      <hr>
-
-      <!-- DAFTAR ALAT -->
-      <div class="mt-3">
-        <label class="font-weight-bold bg-warning p-1">Daftar Alat yang Dipinjam</label>
-        <div id="listAlat">
-          <div class="row align-items-center mb-2 alat-item">
-            <div class="col-md-6">
-              <select name="idalat[]" class="form-control" required>
-                <option value="">-- Pilih Alat --</option>
-                <?php
-                $qAlat = mysqli_query($koneksi, "SELECT idalat, namaalat FROM alat ORDER BY namaalat ASC");
-                while ($a = mysqli_fetch_assoc($qAlat)) {
-                  echo "<option value='{$a['idalat']}'>{$a['namaalat']}</option>";
-                }
-                ?>
-              </select>
-            </div>
-            <div class="col-md-3">
-              <input type="number" name="jumlah[]" class="form-control" min="1" value="1" required>
-            </div>
-            <div class="col-md-2">
-              <button type="button" class="btn btn-danger btn-sm btnHapusAlat">
-                <i class="fas fa-trash"></i> Hapus
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <button type="button" class="btn btn-sm btn-danger mt-2" id="btnTambahAlat">
-          <i class="fas fa-plus"></i> Tambah Alat
-        </button>
-      </div>
     </div>
-
-    <div class="card-footer text-right">
-      <button type="reset" class="btn btn-warning"><i class="fas fa-undo"></i> Reset</button>
-      <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Simpan</button>
-      <a href="index.php?halaman=daftarpeminjaman" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Kembali</a>
-    </div>
-  </form>
 </div>
 
-<!-- SCRIPT -->
 <script>
-  // Hitung durasi otomatis
-  const tglPinjam = document.getElementById("tanggalPinjam");
-  const tglKembali = document.getElementById("tanggalKembali");
-  const durasi = document.getElementById("durasi");
+document.getElementById('add-alat').addEventListener('click', function(){
+    const container = document.getElementById('alat-container');
+    const first = container.querySelector('.alat-item');
+    const clone = first.cloneNode(true);
+    // reset value
+    clone.querySelectorAll('select, input').forEach(el => el.value = '');
+    container.appendChild(clone);
+});
 
-  function hitungDurasi() {
-    if (tglPinjam.value && tglKembali.value) {
-      const start = new Date(tglPinjam.value);
-      const end = new Date(tglKembali.value);
-      const diff = (end - start) / (1000 * 60 * 60 * 24);
-      durasi.value = diff + " hari";
+// Hapus item alat
+document.addEventListener('click', function(e){
+    if(e.target.classList.contains('remove-alat')){
+        const item = e.target.closest('.alat-item');
+        if(item) item.remove();
     }
-  }
-
-  tglPinjam.addEventListener("change", hitungDurasi);
-  tglKembali.addEventListener("change", hitungDurasi);
-
-  // Tambah baris alat baru
-  document.getElementById("btnTambahAlat").addEventListener("click", function() {
-    const newItem = document.querySelector(".alat-item").cloneNode(true);
-    newItem.querySelectorAll("input, select").forEach(el => el.value = "");
-    document.getElementById("listAlat").appendChild(newItem);
-  });
-
-  // Hapus baris alat
-  document.addEventListener("click", function(e) {
-    if (e.target.classList.contains("btnHapusAlat")) {
-      const row = e.target.closest(".alat-item");
-      if (document.querySelectorAll(".alat-item").length > 1) row.remove();
-    }
-  });
-
-  // Filter pencarian peminjam
-  document.getElementById("cariPeminjam").addEventListener("keyup", function() {
-    const filter = this.value.toLowerCase();
-    const rows = document.querySelectorAll("#daftarPeminjam tr");
-    rows.forEach(row => {
-      const nama = row.querySelector("td:first-child").textContent.toLowerCase();
-      row.style.display = nama.includes(filter) ? "" : "none";
-    });
-  });
+});
 </script>
+
+<?php include PAGES_PATH . 'user/footer.php'; ?>
