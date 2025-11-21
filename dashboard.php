@@ -1,6 +1,6 @@
 <?php
 // =======================================
-// File: dashboard.php - Routing Backend PEMINJAMANALATRPL (Final Fix)
+// File: dashboard.php - Routing Backend PEMINJAMANALATRPL (FINAL STABLE)
 // =======================================
 
 require_once __DIR__ . '/includes/path.php';
@@ -26,7 +26,7 @@ switch ($role) {
         $defaultPage = 'dashboardpeminjam';
         break;
 
-    default: // admin, user, atau lainnya
+    default: // admin atau role lain
         $viewFolder = 'views/user';
         $defaultPage = 'dashboardadmin';
         break;
@@ -39,26 +39,52 @@ $hal = $_GET['hal'] ?? $defaultPage;
 $halPath = explode('/', $hal);
 
 // =======================================
-// 3️⃣ Build Path sesuai struktur folder
+// 3️⃣ Role Protection (FINAL)
+// =======================================
+// Petugas dibatasi (hanya boleh kelola peminjam & dashboard)
+$blockedForPetugas = [
+    'user',
+    'jabatan',
+    'merk',
+    'kategori',
+    'alat',
+    'peminjaman',
+    'pengembalian',
+    'laporan'
+];
+
+if ($role === 'petugas') {
+    $requestedModule = $halPath[0] ?? '';
+
+    if (in_array($requestedModule, $blockedForPetugas)) {
+        header("Location: dashboard.php?hal=notfound");
+        exit;
+    }
+}
+
+// =======================================
+// 4️⃣ Build Path sesuai struktur folder
 // =======================================
 if (count($halPath) > 1) {
-    $module = $halPath[0]; // folder di dalam views/user/
-    $page   = $halPath[1]; // file di dalam folder modul
 
-    // Fix: support semua subpage CRUD peminjam
+    $module = $halPath[0];
+    $page   = $halPath[1];
+
+    // Lokasi file calon target
     $fileCandidate = BASE_PATH . "/{$viewFolder}/{$module}/{$page}.php";
 
     if (file_exists($fileCandidate)) {
         $file = $fileCandidate;
+
     } else {
-        // fallback modul
+        // fallback otomatis pada module
         $fallbacks = [
             'user'         => 'user/daftaruser',
             'jabatan'      => 'jabatan/daftarjabatan',
             'kategori'     => 'kategori/daftarkategori',
             'merk'         => 'merk/daftarmerk',
             'alat'         => 'alat/daftaralat',
-            'peminjam'     => 'peminjam/daftarpeminjam',       // <-- fix
+            'peminjam'     => 'peminjam/daftarpeminjam',
             'peminjaman'   => 'peminjaman/daftarpeminjaman',
             'pengembalian' => 'pengembalian/daftarpengembalian',
             'komentar'     => 'komentar/daftarkomentar',
@@ -66,28 +92,27 @@ if (count($halPath) > 1) {
             'laporan'      => 'laporan/daftarlaporan'
         ];
 
-        $parent = $module; // gunakan module sebagai parent
-
-        if (isset($fallbacks[$parent])) {
-            $file = BASE_PATH . "/{$viewFolder}/" . $fallbacks[$parent] . ".php";
+        if (isset($fallbacks[$module])) {
+            $file = BASE_PATH . "/{$viewFolder}/" . $fallbacks[$module] . ".php";
         } else {
-            $file = BASE_PATH . "/{$viewFolder}/{$defaultPage}.php";
+            $file = BASE_PATH . "/views/notfound.php";
         }
     }
 
 } else {
-    // contoh: ?hal=dashboardadmin
-    $file = BASE_PATH . "/{$viewFolder}/{$hal}.php";
+    // Jika hanya hal=dashboardadmin dll
+    $simpleFile = BASE_PATH . "/{$viewFolder}/{$hal}.php";
+    $file = file_exists($simpleFile)
+        ? $simpleFile
+        : BASE_PATH . "/views/notfound.php";
 }
 
 // =======================================
-// 4️⃣ Fallback jika file tidak ditemukan
+// 5️⃣ Fallback jika file benar-benar tidak ada
 // =======================================
 if (!file_exists($file)) {
-    if (in_array($role, ['admin','user','petugas'])) {
-        $file = BASE_PATH . "/{$viewFolder}/{$defaultPage}.php";
-    } elseif ($role === 'peminjam') {
-        $file = BASE_PATH . "/{$viewFolder}/{$defaultPage}.php";
+    if (in_array($role, ['admin','petugas','user','peminjam'])) {
+        $file = BASE_PATH . "/views/notfound.php";
     } else {
         header("Location: " . BASE_URL . "?hal=otentikasipeminjam/loginpeminjam");
         exit;
@@ -95,6 +120,6 @@ if (!file_exists($file)) {
 }
 
 // =======================================
-// 5️⃣ Load View
+// 6️⃣ Load View
 // =======================================
 include $file;

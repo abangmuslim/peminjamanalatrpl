@@ -21,7 +21,7 @@ if ($iduser) {
 ?>
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
 
-    <a href="<?= BASE_URL ?>?hal=dashboardadmin" class="brand-link text-center">
+    <a href="<?= BASE_URL ?>?hal=dashboardpetugas" class="brand-link text-center">
         <span class="brand-text font-weight-bold">PeminjamanAlatRPL</span>
     </a>
 
@@ -30,7 +30,7 @@ if ($iduser) {
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
                 <img src="<?= BASE_URL ?>uploads/user/<?= htmlspecialchars($foto_user) ?>"
-                    class="img-circle elevation-2" style="width:35px;height:35px;object-fit:cover;">
+                     class="img-circle elevation-2" style="width:35px;height:35px;object-fit:cover;">
             </div>
             <div class="info">
                 <a href="#" class="d-block"><?= htmlspecialchars($nama_user) ?></a>
@@ -42,18 +42,21 @@ if ($iduser) {
             <ul class="nav nav-pills nav-sidebar flex-column">
 
                 <li class="nav-item">
-                    <a href="<?= BASE_URL ?>dashboard.php?hal=dashboardadmin" class="nav-link">
+                    <a href="<?= BASE_URL ?>dashboard.php?hal=dashboardpetugas" class="nav-link">
                         <i class="nav-icon fas fa-home"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
 
+                <!-- ❌ Menu ini hanya untuk Admin -->
+                <?php if ($role_user === 'admin'): ?>
                 <li class="nav-item">
                     <a href="<?= BASE_URL ?>dashboard.php?hal=user/daftaruser" class="nav-link">
                         <i class="nav-icon fas fa-users"></i>
                         <p>Kelola User</p>
                     </a>
                 </li>
+                <?php endif; ?>
 
                 <li class="nav-item">
                     <a href="<?= BASE_URL ?>dashboard.php?hal=jabatan/daftarjabatan" class="nav-link">
@@ -83,6 +86,7 @@ if ($iduser) {
                     </a>
                 </li>
 
+                <!-- ✔ PETUGAS BOLEH AKSES PEMINJAM -->
                 <li class="nav-item">
                     <a href="<?= BASE_URL ?>dashboard.php?hal=peminjam/daftarpeminjam" class="nav-link">
                         <i class="nav-icon fas fa-user-check"></i>
@@ -110,7 +114,6 @@ if ($iduser) {
                         <p>Laporan</p>
                     </a>
                 </li>
-
 
             </ul>
         </nav>

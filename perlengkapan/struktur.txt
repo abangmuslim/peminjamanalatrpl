@@ -122,13 +122,15 @@ PEMINJAMANALATRPL/
 │  │  ├─ tambahpeminjaman.php              
 │  │  └─ prosespeminjaman.php        
 │  │
+│  ├─ notfound.php           ← halaman notfound untuk akun peminjam dan user (admin dan petugas) yang sudah login
+│  │
 │  └─ landing/                  ← tampilan publik (extend dari pages/landing)
 │     ├─ home.php               ← halaman utama portal (daftar artikel)
-│     ├─ detilalat.php        ← halaman detail artikel
+│     ├─ detilalat.php          ← halaman detail artikel
 │     ├─ kategori.php           ← daftar artikel per kategori
 │     ├─ tentang.php            ← halaman tentang CMS
 │     ├─ kontak.php             ← halaman kontak (opsional)
-│     ├─ 404.php                ← halaman notfound
+│     ├─ 404.php                ← halaman notfound untuk semua role yang belum login (public)
 │     └─ proseskomentar.php     ← logic komentar publik (insert & tampil)
 │
 │
