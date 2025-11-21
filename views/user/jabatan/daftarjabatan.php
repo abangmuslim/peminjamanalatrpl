@@ -3,70 +3,45 @@ require_once __DIR__ . '/../../../includes/path.php';
 require_once INCLUDES_PATH . 'koneksi.php';
 require_once INCLUDES_PATH . 'ceksession.php';
 
-// Ambil ID
-$id = $_GET['id'] ?? 0;
-
-// Ambil data jabatan untuk diedit
-$stmt = $koneksi->prepare("SELECT idjabatan, namajabatan FROM jabatan WHERE idjabatan = ?");
-$stmt->bind_param("i", $id);
-$stmt->execute();
-$result = $stmt->get_result();
-$jabatan = $result->fetch_assoc();
-
-if (!$jabatan) {
-    header("Location: " . BASE_URL . "dashboard.php?hal=jabatan/daftarjabatan&msg=notfound");
-    exit;
-}
-
-// Ambil daftar jabatan
-$hasil = mysqli_query($koneksi, "SELECT * FROM jabatan ORDER BY idjabatan DESC");
+// Ambil data jabatan
+$query = "SELECT * FROM jabatan ORDER BY idjabatan DESC";
+$hasil = mysqli_query($koneksi, $query);
 ?>
 
 <?php include PAGES_PATH . 'user/header.php'; ?>
 <?php include PAGES_PATH . 'user/navbar.php'; ?>
 <?php include PAGES_PATH . 'user/sidebar.php'; ?>
 
-<!-- ==================== KONTEN UTAMA (AMANKAN STRUKTUR AGAR TIDAK ADA GAP) ==================== -->
+<!-- ==================== KONTEN UTAMA (TANPA DUPLIKAT WRAPPER) ==================== -->
 <div class="content p-3">
   <section class="content">
     <div class="container-fluid">
       <div class="row">
 
-        <!-- ==================== KOLOM KIRI: FORM EDIT ==================== -->
+        <!-- ==================== KOLOM KIRI: FORM TAMBAH ==================== -->
         <div class="col-md-4">
-          <div class="card card-warning">
-            <div class="card-header bg-gradient-warning">
-              <h3 class="card-title">
-                <i class="fas fa-edit"></i> Edit Jabatan
-              </h3>
+          <div class="card card-success">
+            <div class="card-header bg-gradient-success">
+              <h3 class="card-title"><i class="fas fa-plus-circle"></i> Tambah Jabatan</h3>
             </div>
 
             <form action="<?= BASE_URL ?>views/user/jabatan/prosesjabatan.php" method="POST">
-              <input type="hidden" name="aksi" value="edit">
-              <input type="hidden" name="idjabatan" value="<?= $jabatan['idjabatan'] ?>">
-
               <div class="card-body">
 
                 <div class="form-group">
                   <label>Nama Jabatan</label>
-                  <input type="text"
-                         name="namajabatan"
-                         class="form-control"
-                         required
-                         value="<?= htmlspecialchars($jabatan['namajabatan']) ?>">
+                  <input type="text" name="namajabatan" class="form-control" required>
                 </div>
 
               </div>
 
               <div class="card-footer text-right">
+                <button type="reset" class="btn btn-warning btn-sm">
+                  <i class="fas fa-retweet"></i> Reset
+                </button>
 
-                <a href="<?= BASE_URL ?>dashboard.php?hal=jabatan/daftarjabatan"
-                   class="btn btn-secondary btn-sm">
-                  <i class="fas fa-arrow-left"></i> Kembali
-                </a>
-
-                <button type="submit" class="btn btn-primary btn-sm">
-                  <i class="fas fa-save"></i> Update
+                <button type="submit" name="aksi" value="tambah" class="btn btn-primary btn-sm">
+                  <i class="fas fa-save"></i> Simpan
                 </button>
               </div>
             </form>
@@ -80,7 +55,7 @@ $hasil = mysqli_query($koneksi, "SELECT * FROM jabatan ORDER BY idjabatan DESC")
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
               <h5 class="m-0">Daftar Jabatan</h5>
 
-              <a href="<?= BASE_URL ?>dashboard.php?hal=jabatan/editjabatan&id=<?= $jabatan['idjabatan'] ?>"
+              <a href="<?= BASE_URL ?>dashboard.php?hal=jabatan/daftarjabatan"
                  class="btn btn-light btn-sm text-primary fw-bold">
                 <i class="fa fa-sync"></i> Refresh
               </a>

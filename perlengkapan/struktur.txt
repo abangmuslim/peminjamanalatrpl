@@ -76,6 +76,7 @@ PEMINJAMANALATRPL/
 │  │  ├─ alat/
 │  │  │  ├─ prosesalat.php    ← logic CRUD alat
 │  │  │  ├─ daftaralat.php
+│  │  │  ├─ tampilalat.php
 │  │  │  ├─ tambahalat.php
 │  │  │  └─ editalat.php
 │  │  │

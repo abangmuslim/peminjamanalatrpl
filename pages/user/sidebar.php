@@ -73,6 +73,13 @@ if ($iduser) {
                 </li>
 
                 <li class="nav-item">
+                    <a href="<?= BASE_URL ?>dashboard.php?hal=asal/daftarasal" class="nav-link">
+                        <i class="nav-icon fas fa-tag"></i>
+                        <p>Asal</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a href="<?= BASE_URL ?>dashboard.php?hal=kategori/daftarkategori" class="nav-link">
                         <i class="nav-icon fas fa-folder"></i>
                         <p>Kategori</p>

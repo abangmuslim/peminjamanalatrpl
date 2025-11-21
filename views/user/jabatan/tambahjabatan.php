@@ -1,44 +1,32 @@
-<!-- Main content -->
-<section class="content">
+<?php
+require_once __DIR__ . '/../../../includes/path.php';
+require_once INCLUDES_PATH . 'koneksi.php';
+require_once INCLUDES_PATH . 'ceksession.php';
+?>
 
-  <!-- Default box -->
-  <div class="card text-xs">
-    <div class="card-header bg-primary">
-      <h2 class="card-title">Tambah jabatan</h2>
-    </div>
+<?php include PAGES_PATH . 'user/header.php'; ?>
+<?php include PAGES_PATH . 'user/navbar.php'; ?>
+<?php include PAGES_PATH . 'user/sidebar.php'; ?>
 
-    <div class="card-body">
+<div class="content">
+    <section class="content-header">
+        <h1>Tambah Jabatan</h1>
+    </section>
 
-      <!-- general form elements -->
-      <div class="card card-warning">
+    <section class="content">
 
-        <!-- form start -->
-        <form action="db/dbjabatan.php?proses=tambah" method="POST" enctype="multipart/form-data">
-          <div class="card-body-sm ml-2">
+        <form method="POST" action="<?= BASE_URL ?>views/user/jabatan/prosesjabatan.php">
+            <input type="hidden" name="aksi" value="tambah">
+
             <div class="form-group">
-              <label for="namajabatan">Nama jabatan</label>
-              <input type="text" class="form-control" id="namajabatan" name="namajabatan" placeholder="Masukkan nama jabatan" required>
+                <label>Nama Jabatan</label>
+                <input type="text" name="namajabatan" class="form-control" required>
             </div>
-          </div>
-          <!-- /.card-body -->
 
-          <div class="card-footer-sm float-right">
-            <button type="reset" class="btn-sm btn-warning"><i class="fa fa-retweet"></i> Reset</button>
-            <button type="submit" class="btn-sm btn-primary"><i class="fa fa-save"></i> Simpan</button>
-          </div>
+            <button type="submit" class="btn btn-primary mt-2">Simpan</button>
         </form>
-      </div>
-      <!-- /.card -->
 
-    </div>
-    <!-- /.card-body -->
+    </section>
+</div>
 
-    <div class="card-footer">
-      Footer
-    </div>
-
-  </div>
-  <!-- /.card -->
-
-</section>
-<!-- /.content -->
+<?php include PAGES_PATH . 'user/footer.php'; ?>

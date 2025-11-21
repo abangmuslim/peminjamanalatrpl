@@ -1,131 +1,164 @@
-<!-- Main content -->
-<section class="content">
+<?php
+require_once __DIR__ . '/../../../includes/path.php';
+require_once INCLUDES_PATH . 'koneksi.php';
+require_once INCLUDES_PATH . 'ceksession.php';
 
-  <!-- Default box -->
-  <div class="card text-xs">
-    <div class="card-header bg-gradient-warning">
-      <h2 class="card-title text-white"><i class="fas fa-edit"></i> Edit Alat</h2>
-    </div>
+// Ambil ID alat
+if (!isset($_GET['id'])) {
+    die("ID alat tidak ditemukan.");
+}
 
-    <div class="card-body">
-      <div class="card card-warning shadow-sm">
-        <?php
-        include("koneksi.php");
-        $idalat = $_GET['idalat'];
-        $sql = mysqli_query($koneksi, "
-          SELECT * FROM alat 
-          WHERE idalat = '$idalat'
-        ");
-        $data = mysqli_fetch_assoc($sql);
+$idalat = intval($_GET['id']);
 
-        // Ambil data dropdown
-        $sqlkategori = mysqli_query($koneksi, "SELECT * FROM kategori ORDER BY namakategori ASC");
-        $sqlmerk = mysqli_query($koneksi, "SELECT * FROM merk ORDER BY namamerk ASC");
-        $sqlposisi = mysqli_query($koneksi, "SELECT * FROM posisi ORDER BY namaposisi ASC");
-        ?>
+// Ambil data alat
+$q = mysqli_query($koneksi, "SELECT * FROM alat WHERE idalat = $idalat");
+$data = mysqli_fetch_assoc($q);
+if (!$data) {
+    die("Data alat tidak ditemukan.");
+}
 
-        <!-- ✅ FORM AKSI -->
-        <form action="db/dbalat.php?proses=edit" method="POST" enctype="multipart/form-data">
-          <div class="card-body ml-2">
+// Ambil dropdown
+$kategori = mysqli_query($koneksi, "SELECT * FROM kategori ORDER BY namakategori ASC");
+$merk     = mysqli_query($koneksi, "SELECT * FROM merk ORDER BY namamerk ASC");
+$posisi   = mysqli_query($koneksi, "SELECT * FROM posisi ORDER BY namaposisi ASC");
+?>
 
-            <input type="hidden" name="idalat" value="<?= $data['idalat']; ?>">
+<?php include PAGES_PATH . 'user/header.php'; ?>
+<?php include PAGES_PATH . 'user/navbar.php'; ?>
+<?php include PAGES_PATH . 'user/sidebar.php'; ?>
 
-            <!-- Input Nama Alat -->
-            <div class="form-group">
-              <label for="namaalat"><strong>Nama Alat</strong></label>
-              <input type="text" class="form-control" id="namaalat" name="namaalat"
-                value="<?= htmlspecialchars($data['namaalat']); ?>" required>
+<div class="content">
+
+    <section class="content-header">
+        <h1>Edit Alat</h1>
+    </section>
+
+    <section class="content">
+
+        <!-- ====== CARD BOX BEGIN ====== -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <form method="POST" action="<?= BASE_URL ?>views/user/alat/prosesalat.php" enctype="multipart/form-data">
+                    <input type="hidden" name="aksi" value="edit">
+                    <input type="hidden" name="idalat" value="<?= $idalat ?>">
+                    <!-- Ubah nama input menjadi fotolama agar sesuai prosesalat.php -->
+                    <input type="hidden" name="fotolama" value="<?= $data['foto'] ?>">
+
+                    <div class="row">
+
+                        <!-- ================= COL KIRI ================= -->
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label>Nama Alat</label>
+                                <input type="text" name="namaalat" class="form-control" value="<?= htmlspecialchars($data['namaalat']) ?>" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Kategori</label>
+                                <select name="idkategori" class="form-control" required>
+                                    <option value="">-- Pilih Kategori --</option>
+                                    <?php while ($k = mysqli_fetch_assoc($kategori)): ?>
+                                        <option value="<?= $k['idkategori'] ?>" 
+                                            <?= ($k['idkategori'] == $data['idkategori']) ? 'selected' : '' ?> >
+                                            <?= htmlspecialchars($k['namakategori']) ?>
+                                        </option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Merk</label>
+                                <select name="idmerk" class="form-control" required>
+                                    <option value="">-- Pilih Merk --</option>
+                                    <?php while ($m = mysqli_fetch_assoc($merk)): ?>
+                                        <option value="<?= $m['idmerk'] ?>"
+                                            <?= ($m['idmerk'] == $data['idmerk']) ? 'selected' : '' ?> >
+                                            <?= htmlspecialchars($m['namamerk']) ?>
+                                        </option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+
+                            <!-- Deskripsi -->
+                            <div class="form-group">
+                                <label>Deskripsi Alat</label>
+                                <textarea name="deskripsi" class="form-control" rows="3"><?= htmlspecialchars($data['deskripsi']) ?></textarea>
+                            </div>
+
+                        </div>
+
+                        <!-- ================= COL KANAN ================= -->
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label>Posisi</label>
+                                <select name="idposisi" class="form-control" required>
+                                    <option value="">-- Pilih Posisi --</option>
+                                    <?php while ($p = mysqli_fetch_assoc($posisi)): ?>
+                                        <option value="<?= $p['idposisi'] ?>"
+                                            <?= ($p['idposisi'] == $data['idposisi']) ? 'selected' : '' ?> >
+                                            <?= htmlspecialchars($p['namaposisi']) ?>
+                                        </option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Kondisi</label>
+                                <select name="kondisi" class="form-control" required>
+                                    <option value="baru"        <?= ($data['kondisi'] == 'baru') ? 'selected' : '' ?>>Baru</option>
+                                    <option value="baik"        <?= ($data['kondisi'] == 'baik') ? 'selected' : '' ?>>Baik</option>
+                                    <option value="kurangbaik"  <?= ($data['kondisi'] == 'kurangbaik') ? 'selected' : '' ?>>Kurang Baik</option>
+                                    <option value="rusak"       <?= ($data['kondisi'] == 'rusak') ? 'selected' : '' ?>>Rusak</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tanggal Pembelian</label>
+                                <input type="date" name="tanggalpembelian" 
+                                       value="<?= $data['tanggalpembelian'] ?>" 
+                                       class="form-control">
+                            </div>
+
+                            <!-- Upload Foto -->
+                            <div class="form-group">
+                                <label>Foto Alat (Opsional)</label>
+                                <input type="file" name="foto" class="form-control" accept="image/*" onchange="previewFoto(event)">
+                            </div>
+
+                            <!-- Preview Foto Lama / Baru -->
+                            <div class="mb-3">
+                                <img id="previewImg"
+                                     src="<?= BASE_URL ?>uploads/alat/<?= $data['foto'] ?>"
+                                     alt="Preview Foto"
+                                     class="img-thumbnail"
+                                     style="width:150px; <?= $data['foto'] ? '' : 'display:none;' ?>">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-2">Update</button>
+
+                </form>
+
             </div>
+        </div>
+        <!-- ====== CARD BOX END ====== -->
 
-            <!-- Dropdown Kategori -->
-            <div class="form-group">
-              <label><strong>Pilih Kategori</strong></label>
-              <select class="form-control" name="idkategori" required>
-                <option value="" disabled>-- Pilih Kategori --</option>
-                <?php while ($kat = mysqli_fetch_array($sqlkategori)) { ?>
-                  <option value="<?= $kat['idkategori']; ?>" <?= $kat['idkategori'] == $data['idkategori'] ? 'selected' : ''; ?>>
-                    <?= $kat['namakategori']; ?>
-                  </option>
-                <?php } ?>
-              </select>
-            </div>
+    </section>
 
-            <!-- Dropdown Merk -->
-            <div class="form-group">
-              <label><strong>Pilih Merk</strong></label>
-              <select class="form-control" name="idmerk" required>
-                <option value="" disabled>-- Pilih Merk --</option>
-                <?php while ($merk = mysqli_fetch_array($sqlmerk)) { ?>
-                  <option value="<?= $merk['idmerk']; ?>" <?= $merk['idmerk'] == $data['idmerk'] ? 'selected' : ''; ?>>
-                    <?= $merk['namamerk']; ?>
-                  </option>
-                <?php } ?>
-              </select>
-            </div>
+</div>
 
-            <!-- Dropdown Posisi -->
-            <div class="form-group">
-              <label><strong>Pilih Posisi / Lokasi Alat</strong></label>
-              <select class="form-control" name="idposisi" required>
-                <option value="" disabled>-- Pilih Posisi --</option>
-                <?php while ($pos = mysqli_fetch_array($sqlposisi)) { ?>
-                  <option value="<?= $pos['idposisi']; ?>" <?= $pos['idposisi'] == $data['idposisi'] ? 'selected' : ''; ?>>
-                    <?= $pos['namaposisi']; ?>
-                  </option>
-                <?php } ?>
-              </select>
-            </div>
+<?php include PAGES_PATH . 'user/footer.php'; ?>
 
-            <!-- Input Kondisi -->
-            <div class="form-group">
-              <label for="kondisi"><strong>Kondisi</strong></label>
-              <select class="form-control" name="kondisi" id="kondisi" required>
-                <option value="" disabled>-- Pilih Kondisi --</option>
-                <option value="Baik" <?= $data['kondisi'] == 'Baik' ? 'selected' : ''; ?>>Baik</option>
-                <option value="Cukup" <?= $data['kondisi'] == 'Cukup' ? 'selected' : ''; ?>>Cukup</option>
-                <option value="Rusak" <?= $data['kondisi'] == 'Rusak' ? 'selected' : ''; ?>>Rusak</option>
-              </select>
-            </div>
-
-            <!-- Input Tanggal Pembelian -->
-            <div class="form-group">
-              <label for="tanggalpembelian"><strong>Tanggal Pembelian</strong></label>
-              <input type="date" class="form-control" id="tanggalpembelian" name="tanggalpembelian"
-                value="<?= $data['tanggalpembelian']; ?>" required>
-            </div>
-
-            <!-- Input Foto -->
-            <div class="form-group">
-              <label for="foto"><strong>Foto Alat</strong></label><br>
-              <?php if (!empty($data['foto']) && file_exists("foto/alat/" . $data['foto'])) { ?>
-                <img src="foto/alat/<?= $data['foto']; ?>" alt="Foto Alat" width="120" class="img-thumbnail mb-2">
-                <br>
-              <?php } else { ?>
-                <span class="text-muted">Belum ada foto</span><br>
-              <?php } ?>
-
-              <input type="file" name="foto" id="foto" class="form-control mt-2" accept="image/*">
-              <small class="text-muted">Upload foto baru (opsional). Kosongkan jika tidak ingin mengubah foto.</small>
-            </div>
-
-          </div>
-
-          <!-- Tombol Aksi -->
-          <div class="card-footer bg-light">
-            <button type="submit" class="btn btn-warning float-right ml-3">
-              <i class="fa fa-save"></i> Update
-            </button>
-            <a href="index.php?halaman=alat" class="btn btn-secondary float-right">
-              <i class="fa fa-arrow-left"></i> Kembali
-            </a>
-          </div>
-
-        </form>
-      </div>
-    </div>
-
-    <div class="card-footer text-center text-muted">
-      <small>© 2025 - Sistem Peminjaman Alat RPL</small>
-    </div>
-  </div>
-</section>
+<script>
+function previewFoto(event) {
+    const img = document.getElementById('previewImg');
+    img.src = URL.createObjectURL(event.target.files[0]);
+    img.style.display = 'block';
+}
+</script>

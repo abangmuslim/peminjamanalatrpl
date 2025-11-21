@@ -1,7 +1,7 @@
 <?php
 // =======================================
 // File: views/user/dashboardadmin.php
-// Deskripsi: Dashboard Admin PeminjamanAlatRPL (fix layout seperti dashboardpetugas)
+// Deskripsi: Dashboard Admin PeminjamanAlatRPL (versi final lengkap)
 // =======================================
 
 // Statistik ringkas
@@ -25,9 +25,17 @@ while ($row = mysqli_fetch_assoc($hasilKategori)) {
     $jumlahPeminjaman[] = $row['jumlah'];
 }
 
-// Peminjaman terbaru
+// 🔥 PEMINJAM TERBARU (5 data)
+$peminjamTerbaru = mysqli_query($koneksi, "
+    SELECT idpeminjam, namapeminjam, foto, status
+    FROM peminjam
+    ORDER BY tanggalbuat DESC
+    LIMIT 5
+");
+
+// 🔥 PEMINJAMAN TERBARU (5 data)
 $peminjamanTerbaru = mysqli_query($koneksi, "
-    SELECT dp.idpeminjaman, p.idpeminjam, pm.namapeminjam, a.namaalat, dp.tanggalpinjam
+    SELECT dp.idpeminjaman, pm.namapeminjam, a.namaalat, dp.tanggalpinjam
     FROM detilpeminjaman dp
     LEFT JOIN peminjaman p ON p.idpeminjaman = dp.idpeminjaman
     LEFT JOIN peminjam pm ON pm.idpeminjam = p.idpeminjam
@@ -36,7 +44,7 @@ $peminjamanTerbaru = mysqli_query($koneksi, "
     LIMIT 5
 ");
 
-// User terbaru
+// 🔥 USER TERBARU (5 data)
 $userTerbaru = mysqli_query($koneksi, "
     SELECT iduser, namauser, username, email
     FROM user
@@ -44,15 +52,13 @@ $userTerbaru = mysqli_query($koneksi, "
     LIMIT 5
 ");
 
-// ===============================
-// Include layout (SAMA PERSIS dengan dashboardpetugas)
-// ===============================
+// Include layout
 include PAGES_PATH . 'user/header.php';
 include PAGES_PATH . 'user/navbar.php';
-include PAGES_PATH . 'user/sidebar.php';  // ⬅ sidebar admin
+include PAGES_PATH . 'user/sidebar.php';
 ?>
 
-<!-- MULAI WRAPPER KONTEN (harus setelah sidebar) -->
+<!-- WRAPPER -->
 <div class="content p-3">
   <section class="content">
     <div class="container-fluid">
@@ -82,7 +88,7 @@ include PAGES_PATH . 'user/sidebar.php';  // ⬅ sidebar admin
         <?php } ?>
       </div>
 
-      <!-- Grafik dan Tabel -->
+      <!-- Grafik + Tabel -->
       <div class="row">
 
         <!-- Grafik -->
@@ -93,26 +99,56 @@ include PAGES_PATH . 'user/sidebar.php';  // ⬅ sidebar admin
           </div>
         </div>
 
-        <!-- Tabel Terbaru -->
+        <!-- Kolom Kanan – 2 Kotak Terbaru -->
         <div class="col-lg-6 col-12">
+
+          <!-- 🔥 PEMINJAM TERBARU -->
           <div class="card shadow-sm mb-3">
-            <div class="card-header bg-success text-white"><h6 class="m-0">Peminjaman Terbaru</h6></div>
+            <div class="card-header bg-success text-white"><h6 class="m-0">Peminjam Terbaru</h6></div>
             <div class="card-body p-2">
+
               <table class="table table-sm table-striped mb-0">
-                <thead><tr><th>Peminjam</th><th>Alat</th><th>Tanggal</th></tr></thead>
-                <tbody>
-                <?php while($pinjam=mysqli_fetch_assoc($peminjamanTerbaru)){ ?>
+                <thead>
                   <tr>
-                    <td><?= htmlspecialchars($pinjam['namapeminjam']) ?></td>
-                    <td><?= htmlspecialchars($pinjam['namaalat']) ?></td>
-                    <td><?= date('d/m/Y',strtotime($pinjam['tanggalpinjam'])) ?></td>
+                    <th>No</th><th>Nama</th><th>Foto</th><th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                <?php $no=1; while($pm=mysqli_fetch_assoc($peminjamTerbaru)){ ?>
+                  <tr>
+                    <td><?= $no++ ?></td>
+                    <td><?= htmlspecialchars($pm['namapeminjam']) ?></td>
+
+                    <td>
+                      <?php if(!empty($pm['foto'])){ ?>
+                        <img src="uploads/peminjam/<?= htmlspecialchars($pm['foto']) ?>"
+                             style="width:40px;height:40px;object-fit:cover;border-radius:50%;">
+                      <?php } else { ?>
+                        <span class="text-muted">-</span>
+                      <?php } ?>
+                    </td>
+
+                    <td>
+                      <?php
+                        $warna = [
+                          'pending'    => 'secondary',
+                          'disetujui'  => 'success',
+                          'ditolak'    => 'danger'
+                        ];
+                      ?>
+                      <span class="badge bg-<?= $warna[$pm['status']] ?? 'secondary' ?>">
+                        <?= htmlspecialchars($pm['status']) ?>
+                      </span>
+                    </td>
                   </tr>
                 <?php } ?>
                 </tbody>
               </table>
+
             </div>
           </div>
 
+          <!-- 🔥 USER TERBARU -->
           <div class="card shadow-sm">
             <div class="card-header bg-warning text-white"><h6 class="m-0">User Terbaru</h6></div>
             <div class="card-body p-2">
@@ -131,6 +167,39 @@ include PAGES_PATH . 'user/sidebar.php';  // ⬅ sidebar admin
             </div>
           </div>
 
+        </div>
+      </div>
+
+      <!-- 🔥 PEMINJAMAN TERBARU (SESUAI GAMBAR, BARIS FULL) -->
+      <div class="row mt-3">
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-header bg-danger text-white"><h6 class="m-0">Peminjaman Terbaru</h6></div>
+            <div class="card-body p-2">
+
+              <table class="table table-sm table-striped mb-0">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Peminjam</th>
+                    <th>Nama Alat</th>
+                    <th>Tanggal Pinjam</th>
+                  </tr>
+                </thead>
+                <tbody>
+                <?php $no=1; while($p=mysqli_fetch_assoc($peminjamanTerbaru)){ ?>
+                  <tr>
+                    <td><?= $no++ ?></td>
+                    <td><?= htmlspecialchars($p['namapeminjam']) ?></td>
+                    <td><?= htmlspecialchars($p['namaalat']) ?></td>
+                    <td><?= date('d/m/Y',strtotime($p['tanggalpinjam'])) ?></td>
+                  </tr>
+                <?php } ?>
+                </tbody>
+              </table>
+
+            </div>
+          </div>
         </div>
       </div>
 

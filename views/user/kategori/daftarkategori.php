@@ -3,66 +3,40 @@ require_once __DIR__ . '/../../../includes/path.php';
 require_once INCLUDES_PATH . 'koneksi.php';
 require_once INCLUDES_PATH . 'ceksession.php';
 
-// Ambil ID kategori
-$id = $_GET['id'] ?? 0;
+include PAGES_PATH . 'user/header.php';
+include PAGES_PATH . 'user/navbar.php';
+include PAGES_PATH . 'user/sidebar.php';
 
-// Ambil data kategori yang akan diedit
-$stmt = $koneksi->prepare("SELECT * FROM kategori WHERE idkategori = ?");
-$stmt->bind_param("i", $id);
-$stmt->execute();
-$result = $stmt->get_result();
-$kategori = $result->fetch_assoc();
-
-if (!$kategori) {
-    header("Location: " . BASE_URL . "dashboard.php?hal=kategori/daftarkategori&msg=notfound");
-    exit;
-}
-
-// Ambil semua data untuk daftar
 $data = mysqli_query($koneksi, "SELECT * FROM kategori ORDER BY idkategori DESC");
 ?>
-
-<?php include PAGES_PATH . 'user/header.php'; ?>
-<?php include PAGES_PATH . 'user/navbar.php'; ?>
-<?php include PAGES_PATH . 'user/sidebar.php'; ?>
 
 <div class="content p-3">
   <section class="content">
     <div class="container-fluid">
       <div class="row">
 
-        <!-- ========== FORM EDIT KATEGORI ========== -->
+        <!-- ========== FORM TAMBAH KATEGORI ========== -->
         <div class="col-md-4">
-          <div class="card card-warning">
-            <div class="card-header bg-gradient-warning">
+          <div class="card card-primary">
+            <div class="card-header bg-gradient-primary">
               <h3 class="card-title">
-                <i class="fas fa-edit"></i> Edit Kategori
+                <i class="fas fa-plus-circle"></i> Tambah Kategori
               </h3>
             </div>
 
             <form action="<?= BASE_URL ?>views/user/kategori/proseskategori.php" method="POST">
-              <input type="hidden" name="aksi" value="edit">
-              <input type="hidden" name="idkategori" value="<?= $kategori['idkategori'] ?>">
+              <input type="hidden" name="aksi" value="tambah">
 
               <div class="card-body">
                 <div class="form-group">
                   <label>Nama Kategori</label>
-                  <input type="text"
-                         name="namakategori"
-                         class="form-control"
-                         value="<?= htmlspecialchars($kategori['namakategori']); ?>"
-                         required>
+                  <input type="text" name="namakategori" class="form-control" required>
                 </div>
               </div>
 
               <div class="card-footer text-right">
-                <a href="<?= BASE_URL ?>dashboard.php?hal=kategori/daftarkategori"
-                   class="btn btn-secondary btn-sm">
-                  <i class="fas fa-arrow-left"></i> Batal
-                </a>
-
                 <button type="submit" class="btn btn-primary btn-sm">
-                  <i class="fas fa-save"></i> Update
+                  <i class="fas fa-save"></i> Simpan
                 </button>
               </div>
 
@@ -79,7 +53,7 @@ $data = mysqli_query($koneksi, "SELECT * FROM kategori ORDER BY idkategori DESC"
 
             <div class="card-body table-responsive">
               <table class="table table-bordered table-striped">
-                <thead class="bg-light text-center">
+                <thead class="text-center bg-light">
                   <tr>
                     <th style="width:5%;">No</th>
                     <th>Nama Kategori</th>
